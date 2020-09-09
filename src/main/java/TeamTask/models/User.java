@@ -19,7 +19,7 @@ public class User {
     private String password;
     @Column(name = "status")
     private boolean active;
-    @Column(name = "userFirstName")
+    @Column(name = "userfirstname")
     private String userFirstName;
     private Integer id_image;
 

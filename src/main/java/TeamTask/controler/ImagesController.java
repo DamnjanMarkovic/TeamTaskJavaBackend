@@ -30,6 +30,18 @@ public class ImagesController {
         this.imagesService = imagesService;
     }
 
+    @GetMapping("/getImageOnLocation/{imageLocation}")
+    public ResponseEntity<byte[]> getImageOnLocation(@RequestParam("imageLocation") @PathVariable String imageLocation) throws IOException {
+
+        System.out.println(imageLocation);
+        RandomAccessFile f = new RandomAccessFile(imageLocation, "r");
+        byte[] b = new byte[(int)f.length()];
+        f.readFully(b);
+        final HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.IMAGE_PNG);
+        return new ResponseEntity<>(b, headers, HttpStatus.CREATED);
+
+    }
 
     @RequestMapping(value = "/getImageOnID/{id}")
     public ResponseEntity<byte[]> getImage(@PathVariable Integer id) throws IOException {
@@ -42,8 +54,15 @@ public class ImagesController {
     return new ResponseEntity<>(b, headers, HttpStatus.CREATED);
 
     }
-
-
+/*
+    src/main/java/TeamTask/images/apu.jpg
+    src/main/java/TeamTask/images/bart_simpson_teaser.jpg
+    src/main/java/TeamTask/images/Homer.jpeg
+    src/main/java/TeamTask/images/lisaSimpson.jpg
+    src/main/java/TeamTask/images/Moe.png
+    src/main/java/TeamTask/images/Mr.Burns.jpeg
+    src/main/java/TeamTask/images/Ned_Flanders.png
+  */
     @GetMapping("/{id}")
     public Optional<Images> getPhoto(@PathVariable Integer id){
         return imagesService.getPhoto(id);

@@ -1,6 +1,7 @@
 package TeamTask.models;
 
 import javax.persistence.*;
+import java.awt.*;
 import java.util.Set;
 import java.util.UUID;
 
@@ -22,33 +23,35 @@ public class User {
     private boolean active;
     @Column(name = "userfirstname")
     private String userFirstName;
-    private Integer id_image;
+//    private Integer id_image;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_teams", joinColumns = @JoinColumn(name = "id_user"), inverseJoinColumns = @JoinColumn(name = "id_team"))
     private Teams teams;
 
-
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "user_images", joinColumns = @JoinColumn(name = "id_user"), inverseJoinColumns = @JoinColumn(name = "id_image"))
+    private Images images;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "id_user"), inverseJoinColumns = @JoinColumn(name = "id_role"))
     private Set<Role> roles;
 
 
-    public User(String userName, String password, boolean active, String userFirstName, Integer id_image) {
-        this.userName = userName;
-        this.password = password;
-        this.active = active;
-        this.userFirstName = userFirstName;
-        this.id_image = id_image;
-    }
+//    public User(String userName, String password, boolean active, String userFirstName, Integer id_image) {
+//        this.userName = userName;
+//        this.password = password;
+//        this.active = active;
+//        this.userFirstName = userFirstName;
+//        this.id_image = id_image;
+//    }
 
-    public User(String userName, String password, boolean active, String userFirstName, Integer id_image, Teams teams, Set<Role> roles) {
+    public User(String userName, String password, boolean active, String userFirstName, Images image, Teams teams, Set<Role> roles) {
         this.userName = userName;
         this.password = password;
         this.active = active;
         this.userFirstName = userFirstName;
-        this.id_image = id_image;
+        this.images = image;
         this.teams = teams;
         this.roles = roles;
     }
@@ -56,16 +59,16 @@ public class User {
     public User() {
     }
 
-    public User(UUID id, String userName, String password, boolean active, String userFirstName, Integer id_image) {
-        this.id = id;
-        this.userName = userName;
-        this.password = password;
-        this.active = active;
-        this.userFirstName = userFirstName;
-        this.id_image = id_image;
-
-
-    }
+//    public User(UUID id, String userName, String password, boolean active, String userFirstName, Integer id_image) {
+//        this.id = id;
+//        this.userName = userName;
+//        this.password = password;
+//        this.active = active;
+//        this.userFirstName = userFirstName;
+//        this.id_image = id_image;
+//
+//
+//    }
 
 
 
@@ -79,7 +82,7 @@ public class User {
         this.password = user.getPassword();
         this.active = user.isActive();
         this.userFirstName = user.getUserFirstName();
-        this.id_image = user.getId_image();
+        this.images = user.getImages();
         this.roles = user.getRoles();
         this.teams = user.getTeams();
     }
@@ -144,11 +147,11 @@ public class User {
         this.userFirstName = userFirstName;
     }
 
-    public Integer getId_image() {
-        return id_image;
+    public Images getImages() {
+        return images;
     }
 
-    public void setId_image(Integer id_image) {
-        this.id_image = id_image;
+    public void setImages(Images images) {
+        this.images = images;
     }
 }

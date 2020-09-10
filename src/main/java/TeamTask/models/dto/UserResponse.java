@@ -10,15 +10,15 @@ public class UserResponse implements Serializable {
 
     private UUID id_user;
     private String userFirstName;
-    private Integer id_image;
+    private String imageLocation;
     private Set<String> role;
     private UUID id_team;
 
 
-    public UserResponse(UUID id_user, String userFirstName, Integer id_image, Set<String> role, UUID id_team) {
+    public UserResponse(UUID id_user, String userFirstName, String imageLocation, Set<String> role, UUID id_team) {
         this.id_user = id_user;
         this.userFirstName = userFirstName;
-        this.id_image = id_image;
+        this.imageLocation = imageLocation;
         this.role = role;
         this.id_team = id_team;
 
@@ -40,12 +40,12 @@ public class UserResponse implements Serializable {
         this.userFirstName = userFirstName;
     }
 
-    public Integer getId_image() {
-        return id_image;
+    public String getImageLocation() {
+        return imageLocation;
     }
 
-    public void setId_image(Integer id_image) {
-        this.id_image = id_image;
+    public void setImageLocation(String imageLocation) {
+        this.imageLocation = imageLocation;
     }
 
     public Set<String> getRole() {

@@ -10,6 +10,7 @@ public class Images implements Serializable {
 	@Id
 	@GeneratedValue
 	private int id_image;
+	@Column(name = "imagelocation")
 	private String imageLocation;
 	private String imagename;
 

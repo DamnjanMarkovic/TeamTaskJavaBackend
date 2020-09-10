@@ -86,7 +86,7 @@ public class UserService implements UserDetailsService {
     public String save(UserRequest userRequest) throws SQLException {
     String result = null;
         User user = new User(userRequest.getUsername(), userRequest.getPassword(),
-                true, userRequest.getUserFirstName(), userRequest.getId_image(),
+                true, userRequest.getUserFirstName(), null,
                 null, null);
         userRepository.save(user);
         Integer idNewUser = userRepository.getSpecificUser(user.getUserFirstName());
@@ -102,7 +102,7 @@ public class UserService implements UserDetailsService {
         List<UserResponse> listUserResponse = new ArrayList<>();
         for (User us : allUsers) {
             UserResponse userResponse = new UserResponse(us.getId(), us.getUserFirstName(),
-                    us.getId_image(), us.getRoles().stream().map(Role::getRole).collect(Collectors.toSet()),
+                    us.getImages().getImageLocation(), us.getRoles().stream().map(Role::getRole).collect(Collectors.toSet()),
                     us.getTeams().getId_team());
             listUserResponse.add(userResponse);
         }

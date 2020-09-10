@@ -36,6 +36,15 @@ VALUES
 
     ;
 
+// spajanje slika sa user-om
+
+CREATE TABLE user_images (
+    id_user_images serial not null,
+    id_user UUID,
+    id_image INT,
+    PRIMARY KEY (id_user_images)
+);
+
 
 
 

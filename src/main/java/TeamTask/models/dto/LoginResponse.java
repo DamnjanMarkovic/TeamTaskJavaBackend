@@ -11,18 +11,18 @@ public class LoginResponse implements Serializable {
     private final String jwt;
     private String userName;
     private String userFirstName;
-    private String imagelocation;
+    private Integer id_image;
     private Set<String> role;
     private UUID id_team;
 
 
     public LoginResponse(UUID id_user, String jwt, String username,
-                         String userFirstName, String imagelocation, Set<String> role, UUID id_team) {
+                         String userFirstName, Integer id_image, Set<String> role, UUID id_team) {
         this.id_user = id_user;
         this.jwt = jwt;
         this.userName = username;
         this.userFirstName = userFirstName;
-        this.imagelocation = imagelocation;
+        this.id_image = id_image;
         this.role = role;
         this.id_team = id_team;
 
@@ -76,21 +76,13 @@ public class LoginResponse implements Serializable {
 //        this.userName = userName;
 //    }
 
-    public String getImagelocation() {
-        return imagelocation;
+    public Integer getId_image() {
+        return id_image;
     }
 
-    public void setImagelocation(String imagelocation) {
-        this.imagelocation = imagelocation;
+    public void setId_image(Integer id_image) {
+        this.id_image = id_image;
     }
-
-    //    public String getUserName() {
-//        return userName;
-//    }
-//
-//    public void setUserName(String username) {
-//        this.userName = username;
-//    }
 
     public String getJwt() {
         return jwt;

@@ -71,7 +71,7 @@ public class LoginController {
         MyLoginDetails myLoginDetails = (MyLoginDetails) authentication.getPrincipal();
 
         return ResponseEntity.ok(new LoginResponse(myLoginDetails.getId(), jwt, myLoginDetails.getUsername(), myLoginDetails.getUserFirstName(),
-                myLoginDetails.getImages().getImageLocation(), myLoginDetails.getRoles().stream().map(Role::getRole).collect(Collectors.toSet()), myLoginDetails.getTeams().getId_team()));
+                myLoginDetails.getImages().getId_image(), myLoginDetails.getRoles().stream().map(Role::getRole).collect(Collectors.toSet()), myLoginDetails.getTeams().getId_team()));
 
     }
 

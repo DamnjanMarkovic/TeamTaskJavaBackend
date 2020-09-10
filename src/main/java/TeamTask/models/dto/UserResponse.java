@@ -4,17 +4,18 @@ package TeamTask.models.dto;
 
 import java.io.Serializable;
 import java.util.Set;
+import java.util.UUID;
 
 public class UserResponse implements Serializable {
 
-    private int id_user;
+    private UUID id_user;
     private String userFirstName;
     private Integer id_image;
     private Set<String> role;
-    private int id_team;
+    private UUID id_team;
 
 
-    public UserResponse(int id_user, String userFirstName, Integer id_image, Set<String> role, int id_team) {
+    public UserResponse(UUID id_user, String userFirstName, Integer id_image, Set<String> role, UUID id_team) {
         this.id_user = id_user;
         this.userFirstName = userFirstName;
         this.id_image = id_image;
@@ -23,11 +24,11 @@ public class UserResponse implements Serializable {
 
     }
 
-    public int getId_user() {
+    public UUID getId_user() {
         return id_user;
     }
 
-    public void setId_user(int id_user) {
+    public void setId_user(UUID id_user) {
         this.id_user = id_user;
     }
 
@@ -55,11 +56,11 @@ public class UserResponse implements Serializable {
         this.role = role;
     }
 
-    public int getId_team() {
+    public UUID getId_team() {
         return id_team;
     }
 
-    public void setId_team(int id_team) {
+    public void setId_team(UUID id_team) {
         this.id_team = id_team;
     }
 }

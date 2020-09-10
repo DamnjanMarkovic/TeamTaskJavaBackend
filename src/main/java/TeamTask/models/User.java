@@ -2,6 +2,7 @@ package TeamTask.models;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.UUID;
 
 
 @Entity
@@ -13,7 +14,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "id_user")
-    private int id;
+    private UUID id;
     @Column(name = "username")
     private String userName;
     private String password;
@@ -55,7 +56,7 @@ public class User {
     public User() {
     }
 
-    public User(int id, String userName, String password, boolean active, String userFirstName, Integer id_image) {
+    public User(UUID id, String userName, String password, boolean active, String userFirstName, Integer id_image) {
         this.id = id;
         this.userName = userName;
         this.password = password;
@@ -101,11 +102,11 @@ public class User {
         this.roles = roles;
     }
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

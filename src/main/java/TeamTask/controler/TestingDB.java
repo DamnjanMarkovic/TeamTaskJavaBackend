@@ -10,6 +10,20 @@ ALTER TABLE users ALTER COLUMN id_user DROP DEFAULT,
 ALTER COLUMN id_user SET DATA TYPE UUID USING (uuid_generate_v4()),
 ALTER COLUMN id_user SET DEFAULT uuid_generate_v4();
 
+
+ALTER TABLE task ALTER COLUMN taskid DROP DEFAULT,
+ALTER COLUMN taskid SET DATA TYPE UUID USING (uuid_generate_v4()),
+ALTER COLUMN taskid SET DEFAULT uuid_generate_v4();
+
+ALTER TABLE task ALTER COLUMN teamid DROP DEFAULT,
+ALTER COLUMN teamid SET DATA TYPE UUID USING (uuid_generate_v4());
+
+ALTER TABLE task ALTER COLUMN userid DROP DEFAULT,
+ALTER COLUMN userid SET DATA TYPE UUID USING (uuid_generate_v4());
+
+
+
+
 ALTER TABLE teams ALTER COLUMN id_team DROP DEFAULT,
 ALTER COLUMN id_team SET DATA TYPE UUID USING (uuid_generate_v4()),
 ALTER COLUMN id_team SET DEFAULT uuid_generate_v4();
@@ -22,6 +36,7 @@ ALTER COLUMN id_user SET DATA TYPE UUID USING (uuid_generate_v4());
 
 ALTER TABLE user_teams ALTER COLUMN id_team DROP DEFAULT,
 ALTER COLUMN id_team SET DATA TYPE UUID USING (uuid_generate_v4());
+
 
 
 Burns: e3c8c817-8321-4ddd-a683-d99e6adcd2b9
@@ -44,20 +59,18 @@ CREATE TABLE user_images (
     id_image INT,
     PRIMARY KEY (id_user_images)
 );
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+CREATE TABLE user_task (
+    id_user_task serial not null,
+    id_user UUID,
+    taskid UUID,
+    PRIMARY KEY (id_user_task)
+);
+CREATE TABLE team_task (
+    id_team_task serial not null,
+    id_team UUID,
+    taskid UUID,
+    PRIMARY KEY (id_team_task)
+);
 
 
 
@@ -68,6 +81,15 @@ CREATE TABLE contacts (
     email VARCHAR NOT NULL,
     phone VARCHAR,
     PRIMARY KEY (contact_id)
+);
+CREATE TABLE task (
+    taskid uuid DEFAULT uuid_generate_v4 (),
+    tasktitle VARCHAR NOT NULL,
+	taskscheduled timestamp,
+    tasktext VARCHAR NOT NULL,
+	tasksetat timestamp,
+	taskcompleted Boolean,
+    PRIMARY KEY (taskid)
 );
 
 

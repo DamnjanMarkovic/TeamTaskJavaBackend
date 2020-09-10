@@ -2,6 +2,7 @@ package TeamTask.models;
 
 import javax.persistence.*;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Table(name = "teams")
@@ -9,7 +10,7 @@ public class Teams {
 
         @Id
         @GeneratedValue(strategy = GenerationType.IDENTITY)
-        private Integer id_team;
+        private UUID id_team;
         private String name_team;
         private Integer id_image;
 
@@ -25,17 +26,17 @@ public class Teams {
     public Teams() {
     }
 
-    public Teams(Integer id_team, String name_team, Integer id_image) {
+    public Teams(UUID id_team, String name_team, Integer id_image) {
         this.id_team = id_team;
         this.name_team = name_team;
         this.id_image = id_image;
     }
 
-    public Integer getId_team() {
+    public UUID getId_team() {
         return id_team;
     }
 
-    public void setId_team(Integer id_team) {
+    public void setId_team(UUID id_team) {
         this.id_team = id_team;
     }
 

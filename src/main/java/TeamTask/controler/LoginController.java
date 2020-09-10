@@ -46,6 +46,9 @@ public class LoginController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody LoginRequest loginRequest) throws Exception {
         Authentication authentication = null;
+
+        //check if user is logged in
+        //UUID uuid = UUID.randomUUID();
         try {
             authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
@@ -68,7 +71,7 @@ public class LoginController {
         MyLoginDetails myLoginDetails = (MyLoginDetails) authentication.getPrincipal();
 
         return ResponseEntity.ok(new LoginResponse(myLoginDetails.getId(), jwt, myLoginDetails.getUsername(), myLoginDetails.getUserFirstName(),
-                myLoginDetails.getId_image(), myLoginDetails.getRoles().stream().map(Role::getRole).collect(Collectors.toSet()), myLoginDetails.getTeams().getId_team()));
+                myLoginDetails.getImages().getImageLocation(), myLoginDetails.getRoles().stream().map(Role::getRole).collect(Collectors.toSet()), myLoginDetails.getTeams().getId_team()));
 
     }
 

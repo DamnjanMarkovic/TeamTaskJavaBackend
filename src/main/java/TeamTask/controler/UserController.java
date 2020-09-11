@@ -1,6 +1,7 @@
 package TeamTask.controler;
 
 import TeamTask.models.User;
+import TeamTask.models.dto.UsersInTeamResponse;
 import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -45,11 +46,11 @@ public class UserController {
 		return userService.getAll();
 	}
 
-//	@GetMapping("/getUsersInTeam/{idTeam}")
-//	public List<UserResponse> getUsersInTeam(@PathVariable UUID teamUUID) throws EntityNotFoundException {
-//
-//		return userService.getUsersInTeam(teamUUID);
-//	}
+
+	@GetMapping("/getUsersInTeam/{idTeam}")
+	public List<UsersInTeamResponse> getUsersInTeam(@PathVariable UUID idTeam) throws EntityNotFoundException {
+		return userService.getUsersInTeam(idTeam);
+	}
 
 	@GetMapping("/getUserOnEmail/{useremail}")
 	public List<UserResponse> getUserOnEmail(@PathVariable String useremail) throws EntityNotFoundException {

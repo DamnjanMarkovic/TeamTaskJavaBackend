@@ -4,6 +4,36 @@ public class BackupDocs {
 
 
     /*
+
+ALTER TABLE task
+DROP COLUMN taskscheduled;
+
+ALTER TABLE task
+DROP COLUMN tasksetat;
+ALTER TABLE task ADD COLUMN taskscheduled TIMESTAMP WITH  TIME ZONE;
+ALTER TABLE task ALTER COLUMN taskscheduled SET DEFAULT now();
+ALTER TABLE task ADD COLUMN tasksetat TIMESTAMP WITH  TIME ZONE;
+ALTER TABLE task ALTER COLUMN tasksetat SET DEFAULT now();
+
+
+
+INSERT INTO task(tasktitle, tasktext,taskcompleted)
+VALUES ('naslov zadatka1', 'tekst zadatka1', true),
+('naslov zadatka2', 'tekst zadatka2', true),
+ ('naslov zadatka3', 'tekst zadatka3', true),
+ ('naslov zadatka4', 'tekst zadatka4', true),
+ ('naslov zadatka5', 'tekst zadatka5', true),
+ ('naslov zadatka6', 'tekst zadatka6', true)
+
+;
+
+
+select * from task;
+
+
+
+
+
     CREATE DATABASE teamtask;
 
 

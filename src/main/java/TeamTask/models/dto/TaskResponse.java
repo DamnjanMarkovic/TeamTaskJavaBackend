@@ -23,6 +23,10 @@ public class TaskResponse implements Serializable {
         this.user = user;
     }
 
+    public TaskResponse() {
+
+    }
+
     public UUID getTaskid() {
         return taskid;
     }

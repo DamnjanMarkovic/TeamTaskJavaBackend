@@ -1,8 +1,6 @@
 package TeamTask.service;
 
-import TeamTask.repository.TeamRepository;
-import TeamTask.repository.UserTeamsRepository;
-import org.springframework.data.domain.Example;
+import TeamTask.models.dto.UsersInTeamResponse;
 import org.springframework.transaction.annotation.Transactional;
 import TeamTask.models.Images;
 import TeamTask.models.Role;
@@ -15,8 +13,6 @@ import TeamTask.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 
 import javax.persistence.EntityNotFoundException;
@@ -45,6 +41,25 @@ public class UserService implements UserDetailsService {
         userRepository.deleteUser_Restaurant(id);
 //        userRepository.deleteById(id);
 
+    }
+    @Transactional
+    public List<UsersInTeamResponse> getUsersInTeam(UUID teamUUID) {
+        List<UUID> usersInTeamIDs = userRepository.getUsersIDsInTeam(teamUUID);
+        List<User> allUsers = new ArrayList<>();
+        for (UUID uuidUser: usersInTeamIDs) {
+            User user = userRepository.getUserOnID(uuidUser);
+            allUsers.add(user);
+        }
+        return returnUsersToUserTeam(allUsers);
+    }
+
+    public List<UsersInTeamResponse> returnUsersToUserTeam(List<User> allUsers){
+        List<UsersInTeamResponse> listUserResponse = new ArrayList<>();
+        for (User us : allUsers) {
+            UsersInTeamResponse userResponse = new UsersInTeamResponse(us.getId(), us.getUserFirstName(), us.getImages().getId_image(), us.getUseremail());
+            listUserResponse.add(userResponse);
+        }
+        return listUserResponse;
     }
 
     @Transactional

@@ -15,7 +15,8 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
 
-
+    @Query("SELECT ut.id_user from UserTeams ut where ut.id_team =(:id_team)")
+    List<UUID> getUsersIDsInTeam(UUID id_team);
 
     @Query("SELECT user from User user where user.id =(:id)")
     User getUserOnID(UUID id);

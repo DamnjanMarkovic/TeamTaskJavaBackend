@@ -49,7 +49,7 @@ public class TaskService {
         List<TaskResponse> listTaskResponse = new ArrayList<>();
 
         for (Task task : taskList) {
-            UsersInTeamResponse usersInTeamResponse = new UsersInTeamResponse(task.getUser().getUserFirstName(), task.getUser().getImages().getId_image(), task.getUser().getUseremail());
+            UsersInTeamResponse usersInTeamResponse = new UsersInTeamResponse(task.getUser().getId(), task.getUser().getUserFirstName(), task.getUser().getImages().getId_image(), task.getUser().getUseremail());
             TaskResponse taskResponse = new TaskResponse(task.getTaskid(), task.getTasktitle(), convertTimeToMiliseconds(task.getTaskscheduled()), task.getTasktext(), convertTimeToMiliseconds(task.getTasksetat()), task.isTaskcompleted(), usersInTeamResponse);
             listTaskResponse.add(taskResponse);
         }
@@ -60,9 +60,12 @@ public class TaskService {
         List<TaskResponse> finaList = new ArrayList<>();
 
         for (int i = 0; i < listTasks.size(); i++) {
-            for (int j = 1; j < listTasks.size() ; j++) {
-                if (listTasks.get(i).getTasksetat() < listTasks.get(j).getTasksetat()) {
-                    listTasks.set(i, listTasks.get(j));
+            for (int j = i+1; j < listTasks.size() ; j++) {
+                TaskResponse fake;
+                if (listTasks.get(i).getTasksetat() > listTasks.get(j).getTasksetat()) {
+                    fake = listTasks.get(j);
+                    listTasks.set(j, listTasks.get(i));
+                    listTasks.set(i, fake);
                 }
             }
         }
@@ -71,8 +74,9 @@ public class TaskService {
 
 
 
-    long convertTimeToMiliseconds (String timeReceived) {
-        return LocalDateTime.parse(timeReceived, DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss"))
+    long convertTimeToMiliseconds (String timeReceived) {       //2020-09-11 16:43:35.368929+02
+       String forFormating = timeReceived.substring(0, timeReceived.length()-10);
+        return LocalDateTime.parse(forFormating, DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm:ss"))
                 .atZone(ZoneId.systemDefault())
                 .toInstant()
                 .toEpochMilli();

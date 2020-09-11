@@ -1,5 +1,6 @@
 package TeamTask.repository;
 
+import TeamTask.models.dto.UserResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -9,10 +10,21 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+
 @Repository
-public interface UserRepository extends JpaRepository<User, Integer> {
+public interface UserRepository extends JpaRepository<User, UUID> {
+
+
+
+    @Query("SELECT user from User user where user.id =(:id)")
+    User getUserOnID(UUID id);
+
 
     Optional<User> findByUserName(String username);
+
+    @Query("SELECT user from User user where user.useremail =(:useremail)")
+    User getUserOnEmail(String useremail);
 
     @Query("SELECT u.id from User u where u.userFirstName =(:userFirstName)")
     Integer getSpecificUser(String userFirstName);

@@ -1,5 +1,6 @@
 package TeamTask.controler;
 
+import TeamTask.models.User;
 import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -43,8 +45,21 @@ public class UserController {
 		return userService.getAll();
 	}
 
+//	@GetMapping("/getUsersInTeam/{idTeam}")
+//	public List<UserResponse> getUsersInTeam(@PathVariable UUID teamUUID) throws EntityNotFoundException {
+//
+//		return userService.getUsersInTeam(teamUUID);
+//	}
+
+	@GetMapping("/getUserOnEmail/{useremail}")
+	public List<UserResponse> getUserOnEmail(@PathVariable String useremail) throws EntityNotFoundException {
+
+		return userService.getUserOnEmail(useremail);
+	}
+
+
 	@GetMapping("/{id}")
-	public List<UserResponse> getUser(@PathVariable Integer id) throws EntityNotFoundException {
+	public List<UserResponse> getUserOnID(@PathVariable UUID id) throws EntityNotFoundException {
 
 		return userService.getUser(id);
 	}

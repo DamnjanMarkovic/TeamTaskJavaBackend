@@ -1,6 +1,7 @@
 package TeamTask.models;
 
 import javax.persistence.*;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @Entity

@@ -30,15 +30,15 @@ public class TeamService {
     @Transactional
     public Optional<Teams> getRestaurant(Integer id)  {
 
-            return teamRepository.findById((id));
-
+//            return teamRepository.findById((id));
+return null;
     }
     @Transactional
     public void deleteRestaurant(Integer id)  {
 
         teamRepository.deleteAvailableIngredientsInRestaurant(id);
 
-        teamRepository.deleteById(id);
+//        teamRepository.deleteById(id);
 
     }
 

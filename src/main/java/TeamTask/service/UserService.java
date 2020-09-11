@@ -1,5 +1,7 @@
 package TeamTask.service;
 
+import TeamTask.repository.TeamRepository;
+import TeamTask.repository.UserTeamsRepository;
 import org.springframework.data.domain.Example;
 import org.springframework.transaction.annotation.Transactional;
 import TeamTask.models.Images;
@@ -13,6 +15,8 @@ import TeamTask.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 
 import javax.persistence.EntityNotFoundException;
@@ -26,10 +30,12 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final ImagesRepository imagesRepository;
+//    private final UserTeamsRepository userTeamRepository;
 
     public UserService(UserRepository userRepository, ImagesRepository imagesRepository) {
         this.userRepository = userRepository;
         this.imagesRepository = imagesRepository;
+//        this.userTeamRepository = userTeamRepository;
     }
 
     @Transactional
@@ -37,7 +43,7 @@ public class UserService implements UserDetailsService {
 
         userRepository.deleteUser_Roles(id);
         userRepository.deleteUser_Restaurant(id);
-        userRepository.deleteById(id);
+//        userRepository.deleteById(id);
 
     }
 
@@ -102,29 +108,34 @@ public class UserService implements UserDetailsService {
         List<UserResponse> listUserResponse = new ArrayList<>();
         for (User us : allUsers) {
             UserResponse userResponse = new UserResponse(us.getId(), us.getUserFirstName(),
-                    us.getImages().getImageLocation(), us.getRoles().stream().map(Role::getRole).collect(Collectors.toSet()),
-                    us.getTeams().getId_team());
+                    us.getImages().getId_image(), us.getRoles().stream().map(Role::getRole).collect(Collectors.toSet()),
+                    us.getTeams().getId_team(), us.getUseremail());
             listUserResponse.add(userResponse);
         }
         return listUserResponse;
     }
 
     @Transactional
-    public List<UserResponse> getUser(Integer id) {
-        List<User> allUsers = userRepository.findAllById(Collections.singleton(id));
-        List<UserResponse>listResponse = returnUsersFormated(allUsers);
-        if (listResponse.isEmpty()) {
-            throw new EntityNotFoundException();
-        }
-        return listResponse;
+    public List<UserResponse> getUser(UUID id) {
+        List<User> allUsers = new ArrayList<>();
+        allUsers.add(userRepository.getUserOnID(id));
+        return returnUsersFormated(allUsers);
+
+
+////        List<User> allUsers = userRepository.findAllById(Collections.singleton(id));
+//        List<UserResponse>listResponse = returnUsersFormated(allUsers);
+//        if (listResponse.isEmpty()) {
+//            throw new EntityNotFoundException();
+//        }
+//        return listResponse;
+//        return null;
     }
     @Transactional
-    public Optional<User> getUserOnUsername(String userFirstName) {
+    public List<UserResponse> getUserOnEmail(String useremail) {
+        List<User> allUsers = new ArrayList<>();
+        allUsers.add(userRepository.getUserOnEmail(useremail));
+       return returnUsersFormated(allUsers);
 
-        User userold = new User();
-        userold.setUserFirstName(userFirstName);
-        Example<User> user = Example.of(userold);
-        return userRepository.findOne(user);
     }
 }
 

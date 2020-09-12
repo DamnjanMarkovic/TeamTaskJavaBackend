@@ -11,13 +11,13 @@ import java.util.UUID;
 public class Task {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+//    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "taskid")
     private UUID taskid;
     private String tasktitle;
-    private String taskscheduled;
+    private Timestamp taskscheduled;
     private String tasktext;
-    private String tasksetat;
+    private Timestamp tasksetat;
     private boolean taskcompleted;
 
 
@@ -33,7 +33,20 @@ public class Task {
 
     }
 
-    public Task(UUID taskid, String tasktitle, String taskscheduled, String tasktext, String tasksetat, boolean taskcompleted, Teams teams, User user) {
+    public Task(UUID taskid) {
+        this.taskid = taskid;
+    }
+
+    public Task(UUID taskid, String tasktitle, Timestamp taskscheduled, String tasktext, Timestamp tasksetat, boolean taskcompleted) {
+        this.taskid = taskid;
+        this.tasktitle = tasktitle;
+        this.taskscheduled = taskscheduled;
+        this.tasktext = tasktext;
+        this.tasksetat = tasksetat;
+        this.taskcompleted = taskcompleted;
+    }
+
+    public Task(UUID taskid, String tasktitle, Timestamp taskscheduled, String tasktext, Timestamp tasksetat, boolean taskcompleted, Teams teams, User user) {
         this.taskid = taskid;
         this.tasktitle = tasktitle;
         this.taskscheduled = taskscheduled;
@@ -60,11 +73,11 @@ public class Task {
         this.tasktitle = tasktitle;
     }
 
-    public String getTaskscheduled() {
+    public Timestamp getTaskscheduled() {
         return taskscheduled;
     }
 
-    public void setTaskscheduled(String taskscheduled) {
+    public void setTaskscheduled(Timestamp taskscheduled) {
         this.taskscheduled = taskscheduled;
     }
 
@@ -76,11 +89,11 @@ public class Task {
         this.tasktext = tasktext;
     }
 
-    public String getTasksetat() {
+    public Timestamp getTasksetat() {
         return tasksetat;
     }
 
-    public void setTasksetat(String tasksetat) {
+    public void setTasksetat(Timestamp tasksetat) {
         this.tasksetat = tasksetat;
     }
 

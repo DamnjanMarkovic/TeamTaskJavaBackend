@@ -9,13 +9,12 @@ public class UsersInTeamResponse implements Serializable {
     private UUID id_user;
     private String userFirstName;
     private Integer id_image;
-    private String useremail;
 
-    public UsersInTeamResponse(UUID id_user, String userFirstName, Integer id_image, String useremail) {
+    public UsersInTeamResponse(UUID id_user, String userFirstName, Integer id_image) {
         this.id_user = id_user;
         this.userFirstName = userFirstName;
         this.id_image = id_image;
-        this.useremail = useremail;
+
     }
 
     public UUID getId_user() {
@@ -42,11 +41,4 @@ public class UsersInTeamResponse implements Serializable {
         this.id_image = id_image;
     }
 
-    public String getUseremail() {
-        return useremail;
-    }
-
-    public void setUseremail(String useremail) {
-        this.useremail = useremail;
-    }
 }

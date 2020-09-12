@@ -52,11 +52,11 @@ public class UserController {
 		return userService.getUsersInTeam(idTeam);
 	}
 
-	@GetMapping("/getUserOnEmail/{useremail}")
-	public List<UserResponse> getUserOnEmail(@PathVariable String useremail) throws EntityNotFoundException {
-
-		return userService.getUserOnEmail(useremail);
-	}
+//	@GetMapping("/getUserOnEmail/{useremail}")
+//	public List<UserResponse> getUserOnEmail(@PathVariable String useremail) throws EntityNotFoundException {
+//
+//		return userService.getUserOnEmail(useremail);
+//	}
 
 
 	@GetMapping("/{id}")

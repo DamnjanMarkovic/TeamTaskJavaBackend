@@ -56,7 +56,7 @@ public class UserService implements UserDetailsService {
     public List<UsersInTeamResponse> returnUsersToUserTeam(List<User> allUsers){
         List<UsersInTeamResponse> listUserResponse = new ArrayList<>();
         for (User us : allUsers) {
-            UsersInTeamResponse userResponse = new UsersInTeamResponse(us.getId(), us.getUserFirstName(), us.getImages().getId_image(), us.getUseremail());
+            UsersInTeamResponse userResponse = new UsersInTeamResponse(us.getId(), us.getUserFirstName(), us.getImages().getId_image());
             listUserResponse.add(userResponse);
         }
         return listUserResponse;
@@ -124,7 +124,7 @@ public class UserService implements UserDetailsService {
         for (User us : allUsers) {
             UserResponse userResponse = new UserResponse(us.getId(), us.getUserFirstName(),
                     us.getImages().getId_image(), us.getRoles().stream().map(Role::getRole).collect(Collectors.toSet()),
-                    us.getTeams().getId_team(), us.getUseremail());
+                    us.getTeams().getId_team());
             listUserResponse.add(userResponse);
         }
         return listUserResponse;
@@ -145,12 +145,12 @@ public class UserService implements UserDetailsService {
 //        return listResponse;
 //        return null;
     }
-    @Transactional
-    public List<UserResponse> getUserOnEmail(String useremail) {
-        List<User> allUsers = new ArrayList<>();
-        allUsers.add(userRepository.getUserOnEmail(useremail));
-       return returnUsersFormated(allUsers);
-
-    }
+//    @Transactional
+//    public List<UserResponse> getUserOnEmail(String useremail) {
+//        List<User> allUsers = new ArrayList<>();
+//        allUsers.add(userRepository.getUserOnEmail(useremail));
+//       return returnUsersFormated(allUsers);
+//
+//    }
 }
 

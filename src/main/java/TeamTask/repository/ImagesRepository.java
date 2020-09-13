@@ -4,11 +4,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import TeamTask.models.Images;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
-
+@Repository
 public interface ImagesRepository extends JpaRepository<Images, Integer> {
+
+
+
+
 
     @Query(value = "SELECT images.id_image FROM images WHERE images.imagename = ?",
             nativeQuery = true)

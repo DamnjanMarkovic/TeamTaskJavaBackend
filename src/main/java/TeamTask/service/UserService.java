@@ -1,15 +1,14 @@
 package TeamTask.service;
 
+import TeamTask.models.*;
 import TeamTask.models.dto.UsersInTeamResponse;
+import TeamTask.repository.*;
+import org.hibernate.id.UUIDGenerator;
+import org.hibernate.type.PostgresUUIDType;
 import org.springframework.transaction.annotation.Transactional;
-import TeamTask.models.Images;
-import TeamTask.models.Role;
 import TeamTask.models.dto.MyLoginDetails;
-import TeamTask.models.User;
 import TeamTask.models.dto.UserRequest;
 import TeamTask.models.dto.UserResponse;
-import TeamTask.repository.ImagesRepository;
-import TeamTask.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -26,12 +25,18 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final ImagesRepository imagesRepository;
-//    private final UserTeamsRepository userTeamRepository;
+    private final TeamRepository teamRepository;
+    private final UserTeamsRepository userTeamsRepository;
+    private final UserImagesRepository userImagesRepository;
+    private final UserRolesRepository userRolesRepository;
 
-    public UserService(UserRepository userRepository, ImagesRepository imagesRepository) {
+    public UserService(UserRepository userRepository, ImagesRepository imagesRepository, TeamRepository teamRepository, UserTeamsRepository userTeamsRepository, UserImagesRepository userImagesRepository, UserRolesRepository userRolesRepository) {
         this.userRepository = userRepository;
         this.imagesRepository = imagesRepository;
-//        this.userTeamRepository = userTeamRepository;
+        this.teamRepository = teamRepository;
+        this.userTeamsRepository = userTeamsRepository;
+        this.userImagesRepository = userImagesRepository;
+        this.userRolesRepository = userRolesRepository;
     }
 
     @Transactional
@@ -102,21 +107,47 @@ public class UserService implements UserDetailsService {
     }
 
 
-
     @Transactional
     public String save(UserRequest userRequest) throws SQLException {
     String result = null;
+
         User user = new User(userRequest.getUsername(), userRequest.getPassword(),
-                true, userRequest.getUserFirstName(), null,
-                null, null);
-        userRepository.save(user);
-        Integer idNewUser = userRepository.getSpecificUser(user.getUserFirstName());
-        userRepository.connectUserAndRestaurant(userRequest.getId_team(), idNewUser);
-        Integer id_role = userRepository.getIDRoleBasedOnRole(userRequest.getRole());
-        userRepository.connectUserAndRoles(idNewUser, id_role);
+                true, userRequest.getUserFirstName());
+        Teams team = new Teams(userRequest.getName_team());
+        System.out.println("tim je ");
+        System.out.println(team.getId_team());
+        team = teamRepository.save(team);
+        user = userRepository.save(user);
+        UserTeams userTeams = new UserTeams(user.getId(), team.getId_team());
+        UserImages userImages = new UserImages(user.getId(), userRequest.getId_image());
+        Integer id_role = userRepository.getId_role(userRequest.getRole());
+        UserRoles userRole = new UserRoles(user.getId(), id_role);
+        userRolesRepository.save(userRole);
+        userTeamsRepository.save(userTeams);
+        userImagesRepository.save(userImages);
         result = "User inserted in the DB";
         return result;
     }
+    @Transactional
+    public String addNewUserInTeam(UserRequest userRequest) throws SQLException {
+        String result = null;
+
+        User user = new User(userRequest.getUsername(), userRequest.getPassword(),
+                true, userRequest.getUserFirstName());
+
+        user = userRepository.save(user);
+        UserTeams userTeams = new UserTeams(user.getId(), userRequest.getId_team());
+        UserImages userImages = new UserImages(user.getId(), userRequest.getId_image());
+        Integer id_role = userRepository.getId_role(userRequest.getRole());
+        UserRoles userRole = new UserRoles(user.getId(), id_role);
+        userRolesRepository.save(userRole);
+        userTeamsRepository.save(userTeams);
+        userImagesRepository.save(userImages);
+        result = "User inserted in the DB";
+        return result;
+    }
+
+
 
 
     public List<UserResponse> returnUsersFormated(List<User> allUsers){

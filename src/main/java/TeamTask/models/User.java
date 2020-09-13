@@ -47,6 +47,14 @@ public class User {
 //        this.id_image = id_image;
 //    }
 
+
+    public User(String userName, String password, boolean active, String userFirstName) {
+        this.userName = userName;
+        this.password = password;
+        this.active = active;
+        this.userFirstName = userFirstName;
+    }
+
     public User(String userName, String password, boolean active, String userFirstName, Images image, Teams teams, Set<Role> roles) {
         this.userName = userName;
         this.password = password;
@@ -72,8 +80,22 @@ public class User {
 //    }
 
 
+    public User(UUID id, String userName, String password, boolean active, String userFirstName) {
+        this.id = id;
+        this.userName = userName;
+        this.password = password;
+        this.active = active;
+        this.userFirstName = userFirstName;
+    }
 
-
+    public User(UUID id, String userName, String password, boolean active, String userFirstName, Set<Role> roles) {
+        this.id = id;
+        this.userName = userName;
+        this.password = password;
+        this.active = active;
+        this.userFirstName = userFirstName;
+        this.roles = roles;
+    }
 
     public User(User user) {
 

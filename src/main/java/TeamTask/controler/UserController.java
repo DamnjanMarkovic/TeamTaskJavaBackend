@@ -137,16 +137,18 @@ public class UserController {
 	}
 
 
-	@PostMapping(value = "/loadUser", consumes = {"multipart/form-data"})
+	@PostMapping(value = "/signUpUser", consumes = {"multipart/form-data"})
 	public String saveUser (@RequestParam("imageFile") @PathVariable MultipartFile imageFile,
 							UserRequest userRequest){
 		String result = null;
 		String response = null;
 		System.out.println("nesto");
-		Images images = new Images();
-		images.setImagename(imageFile.getOriginalFilename());
+		Images image = new Images();
+		image.setImagename(imageFile.getOriginalFilename());
+
 		try {
-			Integer id_image = imagesService.saveSpecificImage(imageFile, images);
+
+			Integer id_image = imagesService.saveSpecificImage(imageFile, image);
 			userRequest.setId_image(id_image);
 			response = userService.save(userRequest);
 			result = response;
@@ -157,6 +159,28 @@ public class UserController {
 		}
 		return result;
 	}
+	@PostMapping(value = "/addNewUserInTeam", consumes = {"multipart/form-data"})
+	public String addNewUserInTeam (@RequestParam("imageFile") @PathVariable MultipartFile imageFile,
+							UserRequest userRequest){
+		String result = null;
+		String response = null;
+		System.out.println("nesto");
+		Images image = new Images();
+		image.setImagename(imageFile.getOriginalFilename());
+
+		try {
+			Integer id_image = imagesService.saveSpecificImage(imageFile, image);
+			userRequest.setId_image(id_image);
+			response = userService.addNewUserInTeam(userRequest);
+			result = response;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
 
 
 

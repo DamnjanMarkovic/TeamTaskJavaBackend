@@ -11,7 +11,7 @@ import java.util.UUID;
 public class Task {
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "taskid")
     private UUID taskid;
     private String tasktitle;

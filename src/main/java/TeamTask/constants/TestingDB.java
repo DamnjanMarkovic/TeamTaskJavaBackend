@@ -1,8 +1,22 @@
-package TeamTask.controler;
+package TeamTask.constants;
 
 public class TestingDB {
 
     /*
+    ALTER TABLE users
+ALTER COLUMN status
+SET default true;
+CREATE SEQUENCE images_sequence START 1;
+ALTER TABLE images ALTER COLUMN id_image SET DEFAULT nextval('images_sequence');
+CREATE SEQUENCE user_images_sequence START 1;
+ALTER TABLE user_images ALTER COLUMN id_user_images SET DEFAULT nextval('user_images_sequence');
+CREATE SEQUENCE user_teams_sequence START 1;
+ALTER TABLE user_teams ALTER COLUMN id_user_teams SET DEFAULT nextval('user_teams_sequence');
+CREATE SEQUENCE user_roles_sequence START 1;
+ALTER TABLE user_roles ALTER COLUMN id_user_roles SET DEFAULT nextval('user_roles_sequence');
+
+DELETE FROM images WHERE id_image = 1;
+
     CREATE SEQUENCE my_table_column_id_seq;
 SELECT 1
   FROM team_task

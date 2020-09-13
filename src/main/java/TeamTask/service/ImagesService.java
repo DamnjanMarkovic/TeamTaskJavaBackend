@@ -31,23 +31,19 @@ public class ImagesService {
 
     }
     @Transactional
-    public Integer saveSpecificImage(MultipartFile imageFile, Images images) throws Exception {
-        savePhotoImage(imageFile, images);
-        Integer id_image =0;
-         if (imagesRepository.checkImagetexistance(images.getImagename()) > 0) {
-            id_image = imagesRepository.returnImageIDBasedOnImageName(images.getImagename());
-        } else {
-            id_image = imagesRepository.save(images).getId_image();
-        }
-        return id_image;
+    public Integer saveSpecificImage(MultipartFile imageFile, Images image) throws Exception {
+
+        savePhotoImage(imageFile, image);
+        return imagesRepository.save(image).getId_image();
+
     }
 
 
 
-    public void savePhotoImage(MultipartFile imageFile, Images images) throws Exception {
-        images.setImageLocation("src/main/java/restaurantIOS/images/" + images.getImagename());
+    public void savePhotoImage(MultipartFile imageFile, Images image) throws Exception {
+        image.setImageLocation("src/main/java/TeamTask/images/" + image.getImagename());
         byte[] bytes = imageFile.getBytes();
-        Path path = Paths.get(images.getImageLocation());
+        Path path = Paths.get(image.getImageLocation());
         Files.write(path, bytes);
     }
 

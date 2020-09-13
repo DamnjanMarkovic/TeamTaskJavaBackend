@@ -96,7 +96,7 @@ insert into role (id_role, role_label) values (1, ‘admin'),(2, 'user');
 
 insert into user_teams (id_user_team, id_team, id_user) values (7,1,1),(11,1,2),(12,2,5),(13,1,3),(14,2,6),(15,2,4),(16,2,7);
 
-insert into user_roles (id_user_roles, id_user, id_role) values (1,1,1),(2,2,2),(3,3,2),(4,4,1),(5,5,2),(6,6,2),(7,7,2);
+insert into user_roles (id_user_roles, id_user, id_role) values (1,1,1),(2,2,2),(3,3,2),(4,4,1),(5,5,2),(6,6,2),(7,7,2);i
 
 insert into teams (id_team, name_team, id_image) values (1,'Burns Team',1),(2,'Lisa Team',4);
 

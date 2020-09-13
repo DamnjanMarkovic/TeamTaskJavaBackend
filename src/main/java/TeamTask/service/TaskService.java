@@ -43,11 +43,11 @@ public class TaskService {
         Task task = new Task(taskReceiving.getTaskid(), taskReceiving.getTasktitle(), convertMilisecondsToTime(taskReceiving.getTaskscheduled()),
                 taskReceiving.getTasktext(), convertMilisecondsToTime(taskReceiving.getTasksetat()), taskReceiving.isTaskcompleted());
 
+        Task taskenetered = taskRepository.save(task);
+        UserTask userTask = new UserTask(taskReceiving.getId_user(), taskenetered.getTaskid());
 
-        UserTask userTask = new UserTask(taskReceiving.getId_user(), taskReceiving.getTaskid());
+        TeamTask teamTask = new TeamTask(taskReceiving.getId_team(), taskenetered.getTaskid());
 
-        TeamTask teamTask = new TeamTask(taskReceiving.getId_team(), taskReceiving.getTaskid());
-        taskRepository.save(task);
         userTaskRepository.save(userTask);
         teamTaskRepository.save(teamTask);
 

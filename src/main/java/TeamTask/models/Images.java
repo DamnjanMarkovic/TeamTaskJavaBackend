@@ -7,8 +7,10 @@ import java.io.Serializable;
 @Table(name="images")
 public class Images implements Serializable {
 
+//	@Id
+//	@GeneratedValue(strategy = GenerationType.SEQUENCE,generator="images_sequence")
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE,generator="images_sequence")
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id_image;
 	@Column(name = "imagelocation")
 	private String imageLocation;
@@ -26,6 +28,10 @@ public class Images implements Serializable {
 //	}
 
 	public Images() {
+	}
+
+	public Images(String imagename) {
+		this.imagename = imagename;
 	}
 
 	public Integer getId_image() {

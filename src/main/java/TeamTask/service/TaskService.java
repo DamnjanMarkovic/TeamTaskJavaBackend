@@ -55,7 +55,9 @@ public class TaskService {
     }
     @Transactional
     public void deleteTask(UUID taskid)  {
-        taskRepository.deleteById(taskid);
+        Task task = null;
+        task = new Task(taskid);
+        taskRepository.delete(task);
     }
 
     @Transactional

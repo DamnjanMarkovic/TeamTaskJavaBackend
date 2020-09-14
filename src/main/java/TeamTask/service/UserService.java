@@ -76,7 +76,8 @@ public class UserService implements UserDetailsService {
     }
     @Transactional
     public void deleteUser (UUID id_user) {
-
+        Optional<User> user1 = userRepository.findById(id_user);
+        Images images = new Images(user1.get().getUserFirstName());
         List<UUID> taskUUIDS = new ArrayList<>();
         List<UUID> fullTaskList = new ArrayList<>();
 
@@ -92,13 +93,11 @@ public class UserService implements UserDetailsService {
             taskRepository.delete(task);
             teamTaskService.deleteTeamTaskOnTeamID(task.getTaskid());
         }
+        System.out.println(images);
+            imagesRepository.removeImage(images.getImagename());
 
-//        teamTaskService.deleteTeamTaskOnTeamID(id_team);
-//
-
-
-            User user = new User(id_user);
-            userRepository.delete(user);
+        User user = new User(id_user);
+        userRepository.delete(user);
 
     }
 

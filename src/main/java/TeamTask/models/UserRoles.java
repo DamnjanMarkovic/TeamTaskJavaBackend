@@ -7,8 +7,10 @@ import java.util.UUID;
 @Table(name = "user_roles")
 public class UserRoles {
 
+//    @Id
+//    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator="user_roles_sequence")
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator="user_roles_sequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_user_roles;
     private UUID id_user;
     private Integer id_role;

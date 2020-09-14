@@ -43,10 +43,12 @@ public class TeamController {
 
     }
 
-    @GetMapping(value = "/ifExists/{id_team}")
+    @GetMapping("/ifExists/{id_team}")
     public String checkIfTeamExists(@PathVariable UUID id_team)  {
+        System.out.println("stigao ovde");
         return teamService.checkIfTeamExists(id_team);
     }
+
 
     @GetMapping("/{id}")
     public Optional<Teams> getRestaurant(@PathVariable Integer id) throws Exception {

@@ -45,6 +45,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/login").permitAll()
 				.antMatchers("/rest/users/signUpUser").permitAll()
 				.antMatchers("/rest/users/addNewUserInTeam").permitAll()
+				.antMatchers("/rest/teams/ifExists/").permitAll()
 				.anyRequest().authenticated().and()
 				.exceptionHandling().and().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);

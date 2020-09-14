@@ -50,7 +50,6 @@ public class TaskController {
 
     @DeleteMapping("/delete/{taskid}")
     public void deleteTask (@PathVariable UUID taskid) throws Exception {
-        System.out.println("stigli u brisanje");
         taskService.deleteTask(taskid);
 
 

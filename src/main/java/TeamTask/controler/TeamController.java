@@ -2,6 +2,8 @@ package TeamTask.controler;
 
 
 import TeamTask.models.Teams;
+import TeamTask.service.TaskService;
+import TeamTask.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,6 +15,7 @@ import TeamTask.service.TeamService;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping(value = "/rest/teams")
@@ -21,10 +24,14 @@ public class TeamController {
 
     private final TeamService teamService;
     private final ImagesService imagesService;
+    private final UserService userService;
+    private final TaskService taskService;
 
-    public TeamController(TeamService teamService, ImagesService imagesService) {
+    public TeamController(TeamService teamService, ImagesService imagesService, UserService userService, TaskService taskService) {
         this.teamService = teamService;
         this.imagesService = imagesService;
+        this.userService = userService;
+        this.taskService = taskService;
     }
 
     @GetMapping(value = "/all")
@@ -36,21 +43,25 @@ public class TeamController {
 
     }
 
+    @GetMapping(value = "/ifExists/{id_team}")
+    public String checkIfTeamExists(@PathVariable UUID id_team)  {
+        return teamService.checkIfTeamExists(id_team);
+    }
+
     @GetMapping("/{id}")
     public Optional<Teams> getRestaurant(@PathVariable Integer id) throws Exception {
         try {
             return teamService.getRestaurant(id);
         } catch (Exception e){
             throw new Exception("poruka", e.initCause(e.getCause()));
-
         }
-
     }
 
-    @DeleteMapping("/deleteTeam/{id_restaurant}")
-    public void deleteRestaurant (@PathVariable Integer id_restaurant) throws Exception {
+    @DeleteMapping("/deleteTeam/{id_team}")
+    public void deleteTeam (@PathVariable UUID id_team) throws Exception {
+        userService.deleteUsersInTeam(id_team);
+        teamService.deleteTeam(id_team);
 
-        teamService.deleteRestaurant(id_restaurant);
 
     }
 

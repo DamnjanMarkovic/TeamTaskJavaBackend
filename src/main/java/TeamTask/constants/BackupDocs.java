@@ -5,6 +5,8 @@ public class BackupDocs {
 
     /*
 
+delete from teams where id_team = 'b2cedbbe-c30c-4684-888e-fcf7522a4730';
+
 ALTER TABLE task
 DROP COLUMN taskscheduled;
 

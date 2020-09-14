@@ -55,16 +55,28 @@ public class TaskService {
     }
     @Transactional
     public void deleteTask(UUID taskid)  {
-        Task task = new Task(taskid);
-        taskRepository.delete(task);
+        taskRepository.deleteById(taskid);
     }
-
-
 
     @Transactional
     public List<TaskResponse> getAll(){
         List<Task> taskList = taskRepository.findAll();
         return convertTaskToTasksResponse(taskList);
+
+    }
+
+    @Transactional
+    public void deleteTasksOnUserID(UUID id_user){
+        List<UUID> listTaskIDs = userTaskRepository.getTaskIDsOnUserID(id_user);
+        for (UUID taskid:listTaskIDs             ) {
+            System.out.println("stigli ovde");
+            Task task = new Task(taskid);
+            taskRepository.delete(task);
+        }
+
+    }
+    public List<UUID> returnTasksOnUserID(UUID id_user){
+        return userTaskRepository.getTaskIDsOnUserID(id_user);
 
     }
     @Transactional

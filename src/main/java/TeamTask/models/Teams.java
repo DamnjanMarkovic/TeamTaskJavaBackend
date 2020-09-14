@@ -31,7 +31,9 @@ public class Teams {
     public Teams() {
     }
 
-
+    public Teams(UUID id_team) {
+        this.id_team = id_team;
+    }
 
     public Teams(UUID id_team, String name_team) {
         this.id_team = id_team;

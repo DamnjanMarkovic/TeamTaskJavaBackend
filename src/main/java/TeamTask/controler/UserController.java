@@ -1,7 +1,7 @@
 package TeamTask.controler;
 
-import TeamTask.models.User;
 import TeamTask.models.dto.UsersInTeamResponse;
+import TeamTask.service.TaskService;
 import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,12 +33,15 @@ public class UserController {
 
 	@Autowired
 	private final UserService userService;
+	@Autowired
+	private final TaskService taskService;
 
 	@Autowired
 	private ImagesService imagesService;
 
-	public UserController( UserService userService) {
+	public UserController(UserService userService, TaskService taskService) {
 		this.userService = userService;
+		this.taskService = taskService;
 	}
 
 	@GetMapping(value = "/all")
@@ -47,16 +50,17 @@ public class UserController {
 	}
 
 
-	@GetMapping("/getUsersInTeam/{idTeam}")
+	@GetMapping("/updateUserName/{idTeam}")
+	public void updateUserName(@PathVariable String newName,
+													UserRequest userRequest) throws EntityNotFoundException {
+		userService.updateUserName(newName, userRequest);
+	}
+
+	@PutMapping("/getUsersInTeam/{idTeam}")
 	public List<UsersInTeamResponse> getUsersInTeam(@PathVariable UUID idTeam) throws EntityNotFoundException {
 		return userService.getUsersInTeam(idTeam);
 	}
 
-//	@GetMapping("/getUserOnEmail/{useremail}")
-//	public List<UserResponse> getUserOnEmail(@PathVariable String useremail) throws EntityNotFoundException {
-//
-//		return userService.getUserOnEmail(useremail);
-//	}
 
 
 	@GetMapping("/{id}")
@@ -66,7 +70,7 @@ public class UserController {
 	}
 
 	@DeleteMapping("/deleteUser/{id_user}")
-	public void deleteUser (@PathVariable Integer id_user) throws Exception {
+	public void deleteUser (@PathVariable UUID id_user) throws Exception {
 
 		userService.deleteUser(id_user);
 

@@ -11,6 +11,7 @@ import TeamTask.repository.TeamRepository;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class TeamService {
@@ -34,13 +35,25 @@ public class TeamService {
 return null;
     }
     @Transactional
-    public void deleteRestaurant(Integer id)  {
-
-        teamRepository.deleteAvailableIngredientsInRestaurant(id);
-
-//        teamRepository.deleteById(id);
-
+    public void deleteTeam(UUID id_team)  {
+        Teams team = new Teams(id_team);
+        teamRepository.delete(team);
     }
+
+    @Transactional
+    public String checkIfTeamExists(UUID id_Team) {
+        String result = "";
+
+        if (teamRepository.checkIfTeamExists(id_Team) > 0) {
+            result = "Team exists!";
+        } else {
+            result = "That team does not exists.";
+        }
+        return result;
+    }
+
+
+
 
     @Transactional
     public String save(Teams teams) throws SQLException {

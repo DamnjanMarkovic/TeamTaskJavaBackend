@@ -48,6 +48,10 @@ public class User {
 //    }
 
 
+    public User(UUID id) {
+        this.id = id;
+    }
+
     public User(String userName, String password, boolean active, String userFirstName) {
         this.userName = userName;
         this.password = password;

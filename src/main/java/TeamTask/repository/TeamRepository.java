@@ -15,6 +15,9 @@ public interface TeamRepository extends JpaRepository<Teams, UUID> {
 
 
 
+    @Query(value = "SELECT COUNT ( id_team ) FROM teams where id_team = ?;",
+            nativeQuery = true)
+    Integer checkIfTeamExists(UUID id_team);
 
     @Modifying
     @Query(value = "INSERT INTO dinning_table(table_number, id_restaurant, capacity) VALUES (?,?,?)",

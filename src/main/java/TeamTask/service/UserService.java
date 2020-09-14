@@ -3,8 +3,6 @@ package TeamTask.service;
 import TeamTask.models.*;
 import TeamTask.models.dto.UsersInTeamResponse;
 import TeamTask.repository.*;
-import org.hibernate.id.UUIDGenerator;
-import org.hibernate.type.PostgresUUIDType;
 import org.springframework.transaction.annotation.Transactional;
 import TeamTask.models.dto.MyLoginDetails;
 import TeamTask.models.dto.UserRequest;
@@ -29,22 +27,32 @@ public class UserService implements UserDetailsService {
     private final UserTeamsRepository userTeamsRepository;
     private final UserImagesRepository userImagesRepository;
     private final UserRolesRepository userRolesRepository;
+    private final TaskRepository taskRepository;
+    private final UserTaskRepository userTaskRepository;
+    private final TaskService taskService;
+    private final UserTaskService userTaskService;
+    private final TeamTaskService teamTaskService;
 
-    public UserService(UserRepository userRepository, ImagesRepository imagesRepository, TeamRepository teamRepository, UserTeamsRepository userTeamsRepository, UserImagesRepository userImagesRepository, UserRolesRepository userRolesRepository) {
+    public UserService(UserRepository userRepository, ImagesRepository imagesRepository, TeamRepository teamRepository, UserTeamsRepository userTeamsRepository, UserImagesRepository userImagesRepository, UserRolesRepository userRolesRepository, TaskRepository taskRepository, UserTaskRepository userTaskRepository, TaskService taskService, UserTaskService userTaskService, TeamTaskService teamTaskService) {
         this.userRepository = userRepository;
         this.imagesRepository = imagesRepository;
         this.teamRepository = teamRepository;
         this.userTeamsRepository = userTeamsRepository;
         this.userImagesRepository = userImagesRepository;
         this.userRolesRepository = userRolesRepository;
+        this.taskRepository = taskRepository;
+        this.userTaskRepository = userTaskRepository;
+        this.taskService = taskService;
+        this.userTaskService = userTaskService;
+        this.teamTaskService = teamTaskService;
     }
 
     @Transactional
-    public void deleteUser(Integer id)  {
+    public void updateUserName(String newName, UserRequest userRequest) {
 
-        userRepository.deleteUser_Roles(id);
-        userRepository.deleteUser_Restaurant(id);
-//        userRepository.deleteById(id);
+        User user = new User(userRequest.getId_user());
+        userRepository.updateUserName(newName, user.getId());
+//        userRepository.
 
     }
     @Transactional
@@ -65,6 +73,67 @@ public class UserService implements UserDetailsService {
             listUserResponse.add(userResponse);
         }
         return listUserResponse;
+    }
+    @Transactional
+    public void deleteUser (UUID id_user) {
+
+        List<UUID> taskUUIDS = new ArrayList<>();
+        List<UUID> fullTaskList = new ArrayList<>();
+
+        taskUUIDS = taskService.returnTasksOnUserID(id_user);
+        for (UUID idtask: taskUUIDS                 ) {
+            fullTaskList.add(idtask);
+        }
+
+        userTaskService.deleteUserTasksOnUserID(id_user);
+
+        for (UUID taskid:taskUUIDS             ) {
+            Task task = new Task(taskid);
+            taskRepository.delete(task);
+            teamTaskService.deleteTeamTaskOnTeamID(task.getTaskid());
+        }
+
+//        teamTaskService.deleteTeamTaskOnTeamID(id_team);
+//
+
+
+            User user = new User(id_user);
+            userRepository.delete(user);
+
+    }
+
+
+
+    @Transactional
+    public void deleteUsersInTeam (UUID id_team) {
+        List<UUID> userIDsLIst = userTeamsRepository.getUserIDsOnTeamID(id_team);
+        List<UUID> taskUUIDS = new ArrayList<>();
+        List<UUID> fullTaskList = new ArrayList<>();
+        for (UUID id_user: userIDsLIst             ) {
+            taskUUIDS = taskService.returnTasksOnUserID(id_user);
+            for (UUID idtask: taskUUIDS                 ) {
+                fullTaskList.add(idtask);
+            }
+        }
+//        System.out.println(fullTaskList.size());
+//        System.out.println("ovde smo");
+        for (UUID id_user: taskUUIDS             ) {
+            userTaskService.deleteUserTasksOnUserID(id_user);
+        }
+        for (UUID taskid:taskUUIDS             ) {
+            Task task = new Task(taskid);
+            taskRepository.delete(task);
+        }
+
+        teamTaskService.deleteTeamTaskOnTeamID(id_team);
+//
+        for (UUID id_user: userIDsLIst             ) {
+            taskService.deleteTasksOnUserID(id_user);
+        }
+        for (UUID id_user: userIDsLIst             ) {
+            User user = new User(id_user);
+            userRepository.delete(user);
+        }
     }
 
     @Transactional

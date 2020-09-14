@@ -1,5 +1,6 @@
 package TeamTask.repository;
 
+import TeamTask.models.dto.UserRequest;
 import TeamTask.models.dto.UserResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
@@ -15,6 +16,11 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
 
+
+
+    @Modifying
+    @Query("UPDATE users us set us.userfirstname =(:newName) where us.id_user =(:id_user)")
+    void updateUserName(String newName, UUID id_user);
 
     @Query(value = "SELECT id_role FROM role WHERE role_label = ?",
             nativeQuery = true)
@@ -47,7 +53,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     void deleteUser_Restaurant(int id_user);
 
     @Modifying
-    @Transactional
+//    @Transactional
     @Query(value = "INSERT INTO user_restaurant (id_restaurant, id_user) " +
                     "VALUES (?, ?)", nativeQuery = true)
     void connectUserAndRestaurant(Integer id_restaurant, Integer id_user);
@@ -62,7 +68,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     List<Integer> getUsersIDs();
 
     @Modifying
-    @Transactional
+//    @Transactional
     @Query(value = "INSERT INTO user_roles (id_user, id_role) VALUES (?, ?)",
             nativeQuery = true)
     void connectUserAndRoles(Integer id_user, Integer id_role);

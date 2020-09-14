@@ -17,6 +17,12 @@ import java.util.UUID;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, UUID> {
 
+    @Modifying
+    @Transactional
+    @Query(value = "DELETE FROM Task tas where tas.taskid =(:taskid)")
+    void deleteByIdTask(UUID taskid);
+
+
     @Query("SELECT ut.taskid from TeamTask ut where ut.id_team =(:id_team)")
     List<UUID> getTasksIDsInTeam(UUID id_team);
 

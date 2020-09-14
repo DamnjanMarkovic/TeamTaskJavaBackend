@@ -50,13 +50,13 @@ public class UserController {
 	}
 
 
-	@GetMapping("/updateUserName/{idTeam}")
+	@PutMapping("/updateUserName/{idTeam}")
 	public void updateUserName(@PathVariable String newName,
 													UserRequest userRequest) throws EntityNotFoundException {
 		userService.updateUserName(newName, userRequest);
 	}
 
-	@PutMapping("/getUsersInTeam/{idTeam}")
+	@GetMapping("/getUsersInTeam/{idTeam}")
 	public List<UsersInTeamResponse> getUsersInTeam(@PathVariable UUID idTeam) throws EntityNotFoundException {
 		return userService.getUsersInTeam(idTeam);
 	}

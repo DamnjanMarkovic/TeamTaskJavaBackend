@@ -1,6 +1,7 @@
 package TeamTask.controler;
 
 import TeamTask.models.User;
+import TeamTask.models.dto.UsersInTeamResponse;
 import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -45,17 +46,17 @@ public class UserController {
 		return userService.getAll();
 	}
 
-//	@GetMapping("/getUsersInTeam/{idTeam}")
-//	public List<UserResponse> getUsersInTeam(@PathVariable UUID teamUUID) throws EntityNotFoundException {
-//
-//		return userService.getUsersInTeam(teamUUID);
-//	}
 
-	@GetMapping("/getUserOnEmail/{useremail}")
-	public List<UserResponse> getUserOnEmail(@PathVariable String useremail) throws EntityNotFoundException {
-
-		return userService.getUserOnEmail(useremail);
+	@GetMapping("/getUsersInTeam/{idTeam}")
+	public List<UsersInTeamResponse> getUsersInTeam(@PathVariable UUID idTeam) throws EntityNotFoundException {
+		return userService.getUsersInTeam(idTeam);
 	}
+
+//	@GetMapping("/getUserOnEmail/{useremail}")
+//	public List<UserResponse> getUserOnEmail(@PathVariable String useremail) throws EntityNotFoundException {
+//
+//		return userService.getUserOnEmail(useremail);
+//	}
 
 
 	@GetMapping("/{id}")
@@ -136,16 +137,18 @@ public class UserController {
 	}
 
 
-	@PostMapping(value = "/loadUser", consumes = {"multipart/form-data"})
+	@PostMapping(value = "/signUpUser", consumes = {"multipart/form-data"})
 	public String saveUser (@RequestParam("imageFile") @PathVariable MultipartFile imageFile,
 							UserRequest userRequest){
 		String result = null;
 		String response = null;
 		System.out.println("nesto");
-		Images images = new Images();
-		images.setImagename(imageFile.getOriginalFilename());
+		Images image = new Images();
+		image.setImagename(imageFile.getOriginalFilename());
+
 		try {
-			Integer id_image = imagesService.saveSpecificImage(imageFile, images);
+
+			Integer id_image = imagesService.saveSpecificImage(imageFile, image);
 			userRequest.setId_image(id_image);
 			response = userService.save(userRequest);
 			result = response;
@@ -156,6 +159,28 @@ public class UserController {
 		}
 		return result;
 	}
+	@PostMapping(value = "/addNewUserInTeam", consumes = {"multipart/form-data"})
+	public String addNewUserInTeam (@RequestParam("imageFile") @PathVariable MultipartFile imageFile,
+							UserRequest userRequest){
+		String result = null;
+		String response = null;
+		System.out.println("nesto");
+		Images image = new Images();
+		image.setImagename(imageFile.getOriginalFilename());
+
+		try {
+			Integer id_image = imagesService.saveSpecificImage(imageFile, image);
+			userRequest.setId_image(id_image);
+			response = userService.addNewUserInTeam(userRequest);
+			result = response;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
 
 
 

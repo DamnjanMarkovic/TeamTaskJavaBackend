@@ -1,22 +1,17 @@
 package TeamTask.service;
 
-import TeamTask.repository.TeamRepository;
-import TeamTask.repository.UserTeamsRepository;
-import org.springframework.data.domain.Example;
+import TeamTask.models.*;
+import TeamTask.models.dto.UsersInTeamResponse;
+import TeamTask.repository.*;
+import org.hibernate.id.UUIDGenerator;
+import org.hibernate.type.PostgresUUIDType;
 import org.springframework.transaction.annotation.Transactional;
-import TeamTask.models.Images;
-import TeamTask.models.Role;
 import TeamTask.models.dto.MyLoginDetails;
-import TeamTask.models.User;
 import TeamTask.models.dto.UserRequest;
 import TeamTask.models.dto.UserResponse;
-import TeamTask.repository.ImagesRepository;
-import TeamTask.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
 
 import javax.persistence.EntityNotFoundException;
@@ -30,12 +25,18 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final ImagesRepository imagesRepository;
-//    private final UserTeamsRepository userTeamRepository;
+    private final TeamRepository teamRepository;
+    private final UserTeamsRepository userTeamsRepository;
+    private final UserImagesRepository userImagesRepository;
+    private final UserRolesRepository userRolesRepository;
 
-    public UserService(UserRepository userRepository, ImagesRepository imagesRepository) {
+    public UserService(UserRepository userRepository, ImagesRepository imagesRepository, TeamRepository teamRepository, UserTeamsRepository userTeamsRepository, UserImagesRepository userImagesRepository, UserRolesRepository userRolesRepository) {
         this.userRepository = userRepository;
         this.imagesRepository = imagesRepository;
-//        this.userTeamRepository = userTeamRepository;
+        this.teamRepository = teamRepository;
+        this.userTeamsRepository = userTeamsRepository;
+        this.userImagesRepository = userImagesRepository;
+        this.userRolesRepository = userRolesRepository;
     }
 
     @Transactional
@@ -45,6 +46,25 @@ public class UserService implements UserDetailsService {
         userRepository.deleteUser_Restaurant(id);
 //        userRepository.deleteById(id);
 
+    }
+    @Transactional
+    public List<UsersInTeamResponse> getUsersInTeam(UUID teamUUID) {
+        List<UUID> usersInTeamIDs = userRepository.getUsersIDsInTeam(teamUUID);
+        List<User> allUsers = new ArrayList<>();
+        for (UUID uuidUser: usersInTeamIDs) {
+            User user = userRepository.getUserOnID(uuidUser);
+            allUsers.add(user);
+        }
+        return returnUsersToUserTeam(allUsers);
+    }
+
+    public List<UsersInTeamResponse> returnUsersToUserTeam(List<User> allUsers){
+        List<UsersInTeamResponse> listUserResponse = new ArrayList<>();
+        for (User us : allUsers) {
+            UsersInTeamResponse userResponse = new UsersInTeamResponse(us.getId(), us.getUserFirstName(), us.getImages().getId_image());
+            listUserResponse.add(userResponse);
+        }
+        return listUserResponse;
     }
 
     @Transactional
@@ -87,21 +107,47 @@ public class UserService implements UserDetailsService {
     }
 
 
-
     @Transactional
     public String save(UserRequest userRequest) throws SQLException {
     String result = null;
+
         User user = new User(userRequest.getUsername(), userRequest.getPassword(),
-                true, userRequest.getUserFirstName(), null,
-                null, null);
-        userRepository.save(user);
-        Integer idNewUser = userRepository.getSpecificUser(user.getUserFirstName());
-        userRepository.connectUserAndRestaurant(userRequest.getId_team(), idNewUser);
-        Integer id_role = userRepository.getIDRoleBasedOnRole(userRequest.getRole());
-        userRepository.connectUserAndRoles(idNewUser, id_role);
+                true, userRequest.getUserFirstName());
+        Teams team = new Teams(userRequest.getName_team());
+        System.out.println("tim je ");
+        System.out.println(team.getId_team());
+        team = teamRepository.save(team);
+        user = userRepository.save(user);
+        UserTeams userTeams = new UserTeams(user.getId(), team.getId_team());
+        UserImages userImages = new UserImages(user.getId(), userRequest.getId_image());
+        Integer id_role = userRepository.getId_role(userRequest.getRole());
+        UserRoles userRole = new UserRoles(user.getId(), id_role);
+        userRolesRepository.save(userRole);
+        userTeamsRepository.save(userTeams);
+        userImagesRepository.save(userImages);
         result = "User inserted in the DB";
         return result;
     }
+    @Transactional
+    public String addNewUserInTeam(UserRequest userRequest) throws SQLException {
+        String result = null;
+
+        User user = new User(userRequest.getUsername(), userRequest.getPassword(),
+                true, userRequest.getUserFirstName());
+
+        user = userRepository.save(user);
+        UserTeams userTeams = new UserTeams(user.getId(), userRequest.getId_team());
+        UserImages userImages = new UserImages(user.getId(), userRequest.getId_image());
+        Integer id_role = userRepository.getId_role(userRequest.getRole());
+        UserRoles userRole = new UserRoles(user.getId(), id_role);
+        userRolesRepository.save(userRole);
+        userTeamsRepository.save(userTeams);
+        userImagesRepository.save(userImages);
+        result = "User inserted in the DB";
+        return result;
+    }
+
+
 
 
     public List<UserResponse> returnUsersFormated(List<User> allUsers){
@@ -109,7 +155,7 @@ public class UserService implements UserDetailsService {
         for (User us : allUsers) {
             UserResponse userResponse = new UserResponse(us.getId(), us.getUserFirstName(),
                     us.getImages().getId_image(), us.getRoles().stream().map(Role::getRole).collect(Collectors.toSet()),
-                    us.getTeams().getId_team(), us.getUseremail());
+                    us.getTeams().getId_team());
             listUserResponse.add(userResponse);
         }
         return listUserResponse;
@@ -130,12 +176,12 @@ public class UserService implements UserDetailsService {
 //        return listResponse;
 //        return null;
     }
-    @Transactional
-    public List<UserResponse> getUserOnEmail(String useremail) {
-        List<User> allUsers = new ArrayList<>();
-        allUsers.add(userRepository.getUserOnEmail(useremail));
-       return returnUsersFormated(allUsers);
-
-    }
+//    @Transactional
+//    public List<UserResponse> getUserOnEmail(String useremail) {
+//        List<User> allUsers = new ArrayList<>();
+//        allUsers.add(userRepository.getUserOnEmail(useremail));
+//       return returnUsersFormated(allUsers);
+//
+//    }
 }
 

@@ -4,6 +4,36 @@ public class BackupDocs {
 
 
     /*
+
+ALTER TABLE task
+DROP COLUMN taskscheduled;
+
+ALTER TABLE task
+DROP COLUMN tasksetat;
+ALTER TABLE task ADD COLUMN taskscheduled TIMESTAMP WITH TIME ZONE;
+ALTER TABLE task ALTER COLUMN taskscheduled SET DEFAULT now();
+ALTER TABLE task ADD COLUMN tasksetat TIMESTAMP WITH TIME ZONE;
+ALTER TABLE task ALTER COLUMN tasksetat SET DEFAULT now();
+
+
+
+INSERT INTO task(tasktitle, tasktext,taskcompleted)
+VALUES ('naslov zadatka1', 'tekst zadatka1', true),
+('naslov zadatka2', 'tekst zadatka2', true),
+ ('naslov zadatka3', 'tekst zadatka3', true),
+ ('naslov zadatka4', 'tekst zadatka4', true),
+ ('naslov zadatka5', 'tekst zadatka5', true),
+ ('naslov zadatka6', 'tekst zadatka6', true)
+
+;
+
+
+select * from task;
+
+
+
+
+
     CREATE DATABASE teamtask;
 
 
@@ -66,7 +96,7 @@ insert into role (id_role, role_label) values (1, ‘admin'),(2, 'user');
 
 insert into user_teams (id_user_team, id_team, id_user) values (7,1,1),(11,1,2),(12,2,5),(13,1,3),(14,2,6),(15,2,4),(16,2,7);
 
-insert into user_roles (id_user_roles, id_user, id_role) values (1,1,1),(2,2,2),(3,3,2),(4,4,1),(5,5,2),(6,6,2),(7,7,2);
+insert into user_roles (id_user_roles, id_user, id_role) values (1,1,1),(2,2,2),(3,3,2),(4,4,1),(5,5,2),(6,6,2),(7,7,2);i
 
 insert into teams (id_team, name_team, id_image) values (1,'Burns Team',1),(2,'Lisa Team',4);
 

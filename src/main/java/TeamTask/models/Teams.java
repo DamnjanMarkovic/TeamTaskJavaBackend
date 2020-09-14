@@ -1,5 +1,8 @@
 package TeamTask.models;
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.type.PostgresUUIDType;
+
 import javax.persistence.*;
 import java.util.Set;
 import java.util.UUID;
@@ -9,10 +12,12 @@ import java.util.UUID;
 public class Teams {
 
         @Id
-        @GeneratedValue(strategy = GenerationType.IDENTITY)
+        @GeneratedValue(strategy = GenerationType.AUTO)
+//        @GeneratedValue
+        @Column( columnDefinition = "uuid", updatable = false )
         private UUID id_team;
         private String name_team;
-        private Integer id_image;
+
 
 //    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 //    @JoinColumn(name = "id_team")
@@ -26,11 +31,17 @@ public class Teams {
     public Teams() {
     }
 
-    public Teams(UUID id_team, String name_team, Integer id_image) {
+
+
+    public Teams(UUID id_team, String name_team) {
         this.id_team = id_team;
         this.name_team = name_team;
-        this.id_image = id_image;
     }
+
+    public Teams(String name_team) {
+        this.name_team = name_team;
+    }
+
 
     public UUID getId_team() {
         return id_team;
@@ -48,11 +59,5 @@ public class Teams {
         this.name_team = name_team;
     }
 
-    public Integer getId_image() {
-        return id_image;
-    }
 
-    public void setId_image(Integer id_image) {
-        this.id_image = id_image;
-    }
 }

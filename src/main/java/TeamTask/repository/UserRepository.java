@@ -16,6 +16,13 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<User, UUID> {
 
 
+    @Query(value = "SELECT id_role FROM role WHERE role_label = ?",
+            nativeQuery = true)
+    Integer getId_role (String role_label);
+
+
+    @Query("SELECT ut.id_user from UserTeams ut where ut.id_team =(:id_team)")
+    List<UUID> getUsersIDsInTeam(UUID id_team);
 
     @Query("SELECT user from User user where user.id =(:id)")
     User getUserOnID(UUID id);
@@ -23,8 +30,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     Optional<User> findByUserName(String username);
 
-    @Query("SELECT user from User user where user.useremail =(:useremail)")
-    User getUserOnEmail(String useremail);
+//    @Query("SELECT user from User user where user.useremail =(:useremail)")
+//    User getUserOnEmail(String useremail);
 
     @Query("SELECT u.id from User u where u.userFirstName =(:userFirstName)")
     Integer getSpecificUser(String userFirstName);

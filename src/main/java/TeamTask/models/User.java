@@ -23,7 +23,7 @@ public class User {
     private boolean active;
     @Column(name = "userfirstname")
     private String userFirstName;
-    private String useremail;
+
 //    private Integer id_image;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -46,6 +46,14 @@ public class User {
 //        this.userFirstName = userFirstName;
 //        this.id_image = id_image;
 //    }
+
+
+    public User(String userName, String password, boolean active, String userFirstName) {
+        this.userName = userName;
+        this.password = password;
+        this.active = active;
+        this.userFirstName = userFirstName;
+    }
 
     public User(String userName, String password, boolean active, String userFirstName, Images image, Teams teams, Set<Role> roles) {
         this.userName = userName;
@@ -72,8 +80,22 @@ public class User {
 //    }
 
 
+    public User(UUID id, String userName, String password, boolean active, String userFirstName) {
+        this.id = id;
+        this.userName = userName;
+        this.password = password;
+        this.active = active;
+        this.userFirstName = userFirstName;
+    }
 
-
+    public User(UUID id, String userName, String password, boolean active, String userFirstName, Set<Role> roles) {
+        this.id = id;
+        this.userName = userName;
+        this.password = password;
+        this.active = active;
+        this.userFirstName = userFirstName;
+        this.roles = roles;
+    }
 
     public User(User user) {
 
@@ -85,16 +107,8 @@ public class User {
         this.images = user.getImages();
         this.roles = user.getRoles();
         this.teams = user.getTeams();
-        this.useremail = user.getUseremail();
     }
 
-    public String getUseremail() {
-        return useremail;
-    }
-
-    public void setUseremail(String useremail) {
-        this.useremail = useremail;
-    }
 
     public Teams getTeams() {
         return teams;

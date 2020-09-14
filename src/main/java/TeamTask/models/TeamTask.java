@@ -9,19 +9,31 @@ import java.util.UUID;
 public class TeamTask {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id_team_task;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private UUID id_team_task;
     private UUID id_team;
     private UUID taskid;
 
-    public TeamTask(Integer id_team_task, UUID id_team, UUID taskid) {
+    public TeamTask(UUID id_team_task, UUID id_team, UUID taskid) {
         this.id_team_task = id_team_task;
         this.id_team = id_team;
         this.taskid = taskid;
     }
 
-    public Integer getId_team_task() {
-        return id_team_task;
+//    public UUID getId_team_task() {
+//        return id_team_task;
+//    }
+
+    public TeamTask() {
+    }
+
+    public TeamTask(UUID taskid) {
+        this.taskid = taskid;
+    }
+
+    public TeamTask(UUID id_team, UUID taskid) {
+        this.id_team = id_team;
+        this.taskid = taskid;
     }
 
     public TeamTask(TeamTask teamTask) {
@@ -30,7 +42,11 @@ public class TeamTask {
         this.taskid = teamTask.getTaskid();
     }
 
-    public void setId_team_task(Integer id_team_task) {
+    public UUID getId_team_task() {
+        return id_team_task;
+    }
+
+    public void setId_team_task(UUID id_team_task) {
         this.id_team_task = id_team_task;
     }
 

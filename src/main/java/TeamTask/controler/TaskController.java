@@ -2,18 +2,16 @@ package TeamTask.controler;
 
 //import TeamTask.models.Task;
 //import TeamTask.models.User;
+import TeamTask.models.dto.TaskReceiving;
 import TeamTask.models.dto.TaskResponse;
 //import TeamTask.models.dto.UserResponse;
 import TeamTask.service.ImagesService;
 import TeamTask.service.TaskService;
 //import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import TeamTask.service.TeamTaskService;
+import org.springframework.web.bind.annotation.*;
 
 import javax.persistence.EntityNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,11 +23,13 @@ public class TaskController {
 
     private final TaskService taskService;
     private final ImagesService imagesService;
+    private final TeamTaskService teamTaskService;
 
 
-    public TaskController(TaskService taskService, ImagesService imagesService) {
+    public TaskController(TaskService taskService, ImagesService imagesService, TeamTaskService teamTaskService) {
         this.taskService = taskService;
         this.imagesService = imagesService;
+        this.teamTaskService = teamTaskService;
     }
 
     @GetMapping(value = "/all")
@@ -42,5 +42,18 @@ public class TaskController {
         return taskService.getTasksInTeam(idTeam);
     }
 
+    @PostMapping("/save")
+    public String save(@RequestBody TaskReceiving taskReceiving){
+        taskService.save(taskReceiving);
+        return "Order inserted";
+    }
+
+    @DeleteMapping("/delete/{taskid}")
+    public void deleteTask (@PathVariable UUID taskid) throws Exception {
+        System.out.println("stigli u brisanje");
+        taskService.deleteTask(taskid);
+
+
+    }
 
 }

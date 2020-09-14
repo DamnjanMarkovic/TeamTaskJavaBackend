@@ -64,7 +64,7 @@ public class TeamController {
         images.setImagename(imageFile.getOriginalFilename());
         try {
             Integer id_image = imagesService.saveSpecificImage(imageFile, images);
-            teams.setId_image(id_image);
+//            teams.setId_image(id_image);
             response = teamService.save(teams);
             result = response;
         } catch (SQLException e) {

@@ -8,7 +8,7 @@ import java.util.UUID;
 public class UserTeams {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator="user_teams_sequence")
     private Integer id_user_teams;
     private UUID id_user;
     private UUID id_team;
@@ -19,6 +19,11 @@ public class UserTeams {
 
     public UserTeams(Integer id_user_teams, UUID id_user, UUID id_team) {
         this.id_user_teams = id_user_teams;
+        this.id_user = id_user;
+        this.id_team = id_team;
+    }
+
+    public UserTeams(UUID id_user, UUID id_team) {
         this.id_user = id_user;
         this.id_team = id_team;
     }

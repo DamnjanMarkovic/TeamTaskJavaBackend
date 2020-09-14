@@ -19,7 +19,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
 
     @Modifying
-    @Query("UPDATE users us set us.userfirstname =(:newName) where us.id_user =(:id_user)")
+    @Query(value = "UPDATE users us set us.userfirstname = ? where us.id_user = ?",
+            nativeQuery = true)
     void updateUserName(String newName, UUID id_user);
 
     @Query(value = "SELECT id_role FROM role WHERE role_label = ?",

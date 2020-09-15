@@ -1,12 +1,10 @@
 package TeamTask.service;
 
 import TeamTask.models.*;
-import TeamTask.models.dto.UsersInTeamResponse;
+import TeamTask.models.dto.*;
 import TeamTask.repository.*;
+import TeamTask.util.JwtUtil;
 import org.springframework.transaction.annotation.Transactional;
-import TeamTask.models.dto.MyLoginDetails;
-import TeamTask.models.dto.UserRequest;
-import TeamTask.models.dto.UserResponse;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
@@ -32,8 +30,9 @@ public class UserService implements UserDetailsService {
     private final TaskService taskService;
     private final UserTaskService userTaskService;
     private final TeamTaskService teamTaskService;
+    private final JwtUtil jwtTokenUtil;
 
-    public UserService(UserRepository userRepository, ImagesRepository imagesRepository, TeamRepository teamRepository, UserTeamsRepository userTeamsRepository, UserImagesRepository userImagesRepository, UserRolesRepository userRolesRepository, TaskRepository taskRepository, UserTaskRepository userTaskRepository, TaskService taskService, UserTaskService userTaskService, TeamTaskService teamTaskService) {
+    public UserService(UserRepository userRepository, ImagesRepository imagesRepository, TeamRepository teamRepository, UserTeamsRepository userTeamsRepository, UserImagesRepository userImagesRepository, UserRolesRepository userRolesRepository, TaskRepository taskRepository, UserTaskRepository userTaskRepository, TaskService taskService, UserTaskService userTaskService, TeamTaskService teamTaskService, JwtUtil jwtTokenUtil) {
         this.userRepository = userRepository;
         this.imagesRepository = imagesRepository;
         this.teamRepository = teamRepository;
@@ -45,6 +44,7 @@ public class UserService implements UserDetailsService {
         this.taskService = taskService;
         this.userTaskService = userTaskService;
         this.teamTaskService = teamTaskService;
+        this.jwtTokenUtil = jwtTokenUtil;
     }
 
     @Transactional
@@ -236,10 +236,13 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public List<UserResponse> getUser(UUID id) {
-        List<User> allUsers = new ArrayList<>();
-        allUsers.add(userRepository.getUserOnID(id));
-        return returnUsersFormated(allUsers);
+    public LoginResponse getUser(String id_userString, String jwt) {
+        UUID id_user = UUID.fromString(id_userString);
+        Optional<User> us = userRepository.findById(id_user);
+        LoginResponse loginResponse = new LoginResponse(us.get().getId(), jwt, us.get().getUserName(), us.get().getUserFirstName(),
+                us.get().getImages().getId_image(), us.get().getRoles().stream().map(Role::getRole).collect(Collectors.toSet()), us.get().getTeams().getId_team(), us.get().getTeams().getName_team());
+
+        return loginResponse;
 
 
 ////        List<User> allUsers = userRepository.findAllById(Collections.singleton(id));

@@ -1,5 +1,6 @@
 package TeamTask.controler;
 
+import TeamTask.models.dto.LoginResponse;
 import TeamTask.models.dto.UsersInTeamResponse;
 import TeamTask.service.TaskService;
 import org.apache.commons.compress.utils.IOUtils;
@@ -56,15 +57,19 @@ public class UserController {
 //			@PathVariable("id_restaurant") int id_restaurant) {
 
 	@PutMapping("/updateUserName/{userID}/{newName}")
-	public void updateUserName(@PathVariable ("userID") String idTeam, @PathVariable("newName") String newName) throws EntityNotFoundException {
-		userService.updateUserName(idTeam, newName);
+	public void updateUserName(@PathVariable ("userID") String userID, @PathVariable("newName") String newName) throws EntityNotFoundException {
+		userService.updateUserName(userID, newName);
 	}
 
+
+//	@PostMapping(value = "/signUpUser", consumes = {"multipart/form-data"})
+//	public String saveUser (@RequestParam("imageFile") @PathVariable MultipartFile imageFile,
+//							UserRequest userRequest){
 	@PutMapping(value = "/updateUserImage", consumes = {"multipart/form-data"})
 	public void updateUserImage(@RequestParam("imageFile") @PathVariable MultipartFile imageFile,
-								@PathVariable ("imagename") String imagename) throws Exception {
+								String imagename) throws Exception {
 		Images image = new Images();
-		image.setImagename(imagename);
+		image.setImagename(imageFile.getOriginalFilename());
 		imagesService.updateImage(imageFile, image);
 		userService.updateUserImage(imagename);
 	}
@@ -76,10 +81,10 @@ public class UserController {
 
 
 
-	@GetMapping("/{id}")
-	public List<UserResponse> getUserOnID(@PathVariable UUID id) throws EntityNotFoundException {
+	@GetMapping("/getUserOnID/{id_user}/{jwt}")
+	public LoginResponse getUserOnID(@PathVariable ("id_user") String id_user, @PathVariable("jwt") String jwt) throws EntityNotFoundException {
 
-		return userService.getUser(id);
+		return userService.getUser(id_user, jwt);
 	}
 
 	@DeleteMapping("/deleteUser/{id_user}")

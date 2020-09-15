@@ -43,7 +43,7 @@ public class TeamController {
 
     }
 
-    @PostMapping("/ifExists/{id_team}")
+    @GetMapping("/ifExists/{id_team}")
     public String checkIfTeamExists(@PathVariable UUID id_team)  {
         return teamService.checkIfTeamExists(id_team);
     }

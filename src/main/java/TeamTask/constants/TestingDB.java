@@ -3,6 +3,12 @@ package TeamTask.constants;
 public class TestingDB {
 
     /*
+
+
+    delete from images
+WHERE id_image BETWEEN -35 AND -4;
+
+
     ALTER TABLE users
 ALTER COLUMN status
 SET default true;

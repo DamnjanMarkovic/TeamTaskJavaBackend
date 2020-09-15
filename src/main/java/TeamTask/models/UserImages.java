@@ -8,7 +8,7 @@ import java.util.UUID;
 public class UserImages {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator="user_images_sequence")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id_user_images;
     private UUID id_user;
     private Integer id_image;

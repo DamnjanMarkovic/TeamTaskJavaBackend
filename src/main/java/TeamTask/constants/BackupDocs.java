@@ -16,8 +16,6 @@ drop table user_task;
 drop table user_teams;
 drop table users;
 
-drop table
-drop table
 
 
 delete from teams where id_team = 'b2cedbbe-c30c-4684-888e-fcf7522a4730';

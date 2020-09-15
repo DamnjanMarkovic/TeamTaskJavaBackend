@@ -129,11 +129,13 @@ public class UserService implements UserDetailsService {
         }
 
         teamTaskService.deleteTeamTaskOnTeamID(id_team);
-//
+
         for (UUID id_user: userIDsLIst             ) {
             taskService.deleteTasksOnUserID(id_user);
         }
         for (UUID id_user: userIDsLIst             ) {
+//            UUID id_userSpecial = UUID.fromString(id_user.toString());
+//            userRepository.deleteById(id_userSpecial);
             User user = new User(id_user);
             userRepository.delete(user);
         }

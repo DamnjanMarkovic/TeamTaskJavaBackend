@@ -49,11 +49,24 @@ public class UserController {
 		return userService.getAll();
 	}
 
+//	@GetMapping(value = "/tableID/{table_number}/{id_restaurant}")
+//	public DinningTable getSpecificDinningTable(
+//			@PathVariable("table_number") int table_number,
+//
+//			@PathVariable("id_restaurant") int id_restaurant) {
 
-	@PutMapping("/updateUserName/{idTeam}")
-	public void updateUserName(@PathVariable String newName,
-													UserRequest userRequest) throws EntityNotFoundException {
-		userService.updateUserName(newName, userRequest);
+	@PutMapping("/updateUserName/{userID}/{newName}")
+	public void updateUserName(@PathVariable ("userID") String idTeam, @PathVariable("newName") String newName) throws EntityNotFoundException {
+		userService.updateUserName(idTeam, newName);
+	}
+
+	@PutMapping(value = "/updateUserImage", consumes = {"multipart/form-data"})
+	public void updateUserImage(@RequestParam("imageFile") @PathVariable MultipartFile imageFile,
+								@PathVariable ("imagename") String imagename) throws Exception {
+		Images image = new Images();
+		image.setImagename(imagename);
+		imagesService.updateImage(imageFile, image);
+		userService.updateUserImage(imagename);
 	}
 
 	@GetMapping("/getUsersInTeam/{idTeam}")

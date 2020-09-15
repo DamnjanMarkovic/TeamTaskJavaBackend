@@ -43,9 +43,8 @@ public class TeamController {
 
     }
 
-    @GetMapping("/ifExists/{id_team}")
+    @PostMapping("/ifExists/{id_team}")
     public String checkIfTeamExists(@PathVariable UUID id_team)  {
-        System.out.println("stigao ovde");
         return teamService.checkIfTeamExists(id_team);
     }
 

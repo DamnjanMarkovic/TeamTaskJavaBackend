@@ -48,13 +48,17 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public void updateUserName(String newName, UserRequest userRequest) {
-
-        User user = new User(userRequest.getId_user());
-        userRepository.updateUserName(newName, user.getId());
-//        userRepository.
-
+    public void updateUserName(String userID, String newName) {
+        UUID id_user = UUID.fromString(userID);
+        userRepository.updateUserName(newName, id_user);
     }
+
+    @Transactional
+    public void updateUserImage(String imagename) {
+//        UUID id_user = UUID.fromString(userID);
+//        userRepository.updateUserName(newName, id_user);
+    }
+
     @Transactional
     public List<UsersInTeamResponse> getUsersInTeam(UUID teamUUID) {
         List<UUID> usersInTeamIDs = userRepository.getUsersIDsInTeam(teamUUID);

@@ -43,9 +43,9 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		httpSecurity.csrf().disable()
 				.authorizeRequests().antMatchers("/").permitAll()
 				.antMatchers("/login").permitAll()
+				.antMatchers("/rest/teams/ifExists/{id_team}").permitAll()
 				.antMatchers("/rest/users/signUpUser").permitAll()
 				.antMatchers("/rest/users/addNewUserInTeam").permitAll()
-				.antMatchers("/rest/teams/ifExists/").permitAll()
 				.anyRequest().authenticated().and()
 				.exceptionHandling().and().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);

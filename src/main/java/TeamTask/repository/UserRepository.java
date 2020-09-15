@@ -5,6 +5,7 @@ import TeamTask.models.dto.UserResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import TeamTask.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,12 +17,10 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
 
-
-
     @Modifying
-    @Query(value = "UPDATE users us set us.userfirstname = ? where us.id_user = ?",
-            nativeQuery = true)
-    void updateUserName(String newName, UUID id_user);
+    @Transactional
+    @Query("UPDATE User us set us.userFirstName =(:userFirstName) where us.id =(:id)")
+    void updateUserName(String userFirstName, UUID id);
 
     @Query(value = "SELECT id_role FROM role WHERE role_label = ?",
             nativeQuery = true)

@@ -31,6 +31,10 @@ public class ImagesService {
 
     }
     @Transactional
+    public void updateImage(MultipartFile imageFile, Images images) throws Exception {
+        savePhotoImage(imageFile, images);
+    }
+    @Transactional
     public Integer saveSpecificImage(MultipartFile imageFile, Images image) throws Exception {
 
         savePhotoImage(imageFile, image);

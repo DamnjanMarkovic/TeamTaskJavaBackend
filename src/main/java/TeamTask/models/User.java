@@ -2,6 +2,7 @@ package TeamTask.models;
 
 import javax.persistence.*;
 import java.awt.*;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -34,9 +35,13 @@ public class User {
     @JoinTable(name = "user_images", joinColumns = @JoinColumn(name = "id_user"), inverseJoinColumns = @JoinColumn(name = "id_image"))
     private Images images;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "id_user"), inverseJoinColumns = @JoinColumn(name = "id_role"))
     private Set<Role> roles;
+
+//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    @JoinTable(name = "user_task", joinColumns = @JoinColumn(name = "id_user"), inverseJoinColumns = @JoinColumn(name = "taskid"))
+//    private List<Task> listtask;
 
 
 //    public User(String userName, String password, boolean active, String userFirstName, Integer id_image) {

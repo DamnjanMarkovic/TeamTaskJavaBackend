@@ -80,17 +80,17 @@ public class UserController {
 	}
 
 
+	@GetMapping("/getLoggedInUser/{id_user}/{jwt}")
+	public LoginResponse getLoggedInUser(@PathVariable ("id_user") String id_user, @PathVariable("jwt") String jwt) throws EntityNotFoundException {
 
-	@GetMapping("/getUserOnID/{id_user}/{jwt}")
-	public LoginResponse getUserOnID(@PathVariable ("id_user") String id_user, @PathVariable("jwt") String jwt) throws EntityNotFoundException {
-
-		return userService.getUser(id_user, jwt);
+		return userService.getLoggedInUser(id_user, jwt);
 	}
 
 	@DeleteMapping("/deleteUser/{id_user}")
 	public void deleteUser (@PathVariable UUID id_user) throws Exception {
 
 		userService.deleteUser(id_user);
+//		userService.confirmdeleteUser(id_user);
 
 	}
 

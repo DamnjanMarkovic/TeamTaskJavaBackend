@@ -4,6 +4,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.type.PostgresUUIDType;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -18,15 +19,13 @@ public class Teams {
         private UUID id_team;
         private String name_team;
 
-
 //    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JoinColumn(name = "id_team")
+//    @JoinTable(name = "user_teams", joinColumns = @JoinColumn(name = "id_team"), inverseJoinColumns = @JoinColumn(name = "id_user"))
+//    private List<User> listUsers;
 //
-//    private Set<Available_ingredients> available_ingredients;
-//
-//    public Restaurant(Integer id_restaurant) {
-//        this.id_restaurant = id_restaurant;
-//    }
+//    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    @JoinTable(name = "team_task", joinColumns = @JoinColumn(name = "id_team"), inverseJoinColumns = @JoinColumn(name = "taskid"))
+//    private List<Task> listTasks;
 
     public Teams() {
     }

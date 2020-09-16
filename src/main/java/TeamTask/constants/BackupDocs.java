@@ -4,10 +4,14 @@ public class BackupDocs {
 
 
     /*
+Tim koji je visak:
+b2cedbbe-c30c-4684-888e-fcf7522a4730
+delete from teams
+where id_team = 'b2cedbbe-c30c-4684-888e-fcf7522a4730';
+select * from teams
 
-drop table images;
-drop table role;
-drop table task;
+drop table role cascade;
+drop table task cascade;
 drop table team_task;
 drop table teams;
 drop table user_images;
@@ -15,6 +19,7 @@ drop table user_roles;
 drop table user_task;
 drop table user_teams;
 drop table users;
+drop table images;
 
 
 

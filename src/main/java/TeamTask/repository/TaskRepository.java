@@ -18,7 +18,13 @@ import java.util.UUID;
 public interface TaskRepository extends JpaRepository<Task, UUID> {
 
     @Modifying
-    @Transactional
+//    @Transactional
+    @Query("UPDATE Task task set task.taskcompleted =(:taskcompleted) where task.taskid =(:taskid)")
+    void changeCompleteness(UUID taskid, Boolean taskcompleted);
+
+
+    @Modifying
+//    @Transactional
     @Query(value = "DELETE FROM Task tas where tas.taskid =(:taskid)")
     void deleteByIdTask(UUID taskid);
 

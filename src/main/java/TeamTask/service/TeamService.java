@@ -2,7 +2,9 @@ package TeamTask.service;
 
 
 
+import TeamTask.models.Task;
 import TeamTask.models.Teams;
+import TeamTask.models.dto.TaskResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +53,12 @@ return null;
         }
         return result;
     }
+    @Transactional
+    public Teams getTeam(String idTeam) {
+        UUID id_team = UUID.fromString(idTeam);
+        return teamRepository.findById(id_team).get();
 
+    }
 
 
 

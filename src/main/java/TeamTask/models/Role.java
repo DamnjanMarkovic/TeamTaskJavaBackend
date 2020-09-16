@@ -1,6 +1,8 @@
 package TeamTask.models;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "role")
@@ -12,6 +14,10 @@ public class Role {
     private int roleId;
     @Column(name = "role_label")
     private String role;
+
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "id_role"), inverseJoinColumns = @JoinColumn(name = "id_user"))
+    private List<User> listUsers;
 
     public Role(String role) {
         this.role = role;

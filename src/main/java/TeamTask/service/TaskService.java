@@ -60,6 +60,12 @@ public class TaskService {
         taskRepository.delete(task);
     }
 
+//    @Transactional
+//    public void deleteTask(String taskid)  {
+//        UUID taskIDR = UUID.fromString(taskid);
+//        taskRepository.deleteById(taskIDR);
+//    }
+
     @Transactional
     public List<TaskResponse> getAll(){
         List<Task> taskList = taskRepository.findAll();
@@ -82,14 +88,28 @@ public class TaskService {
 
     }
     @Transactional
-    public List<TaskResponse> getTasksInTeam(UUID idTeam) {
-        List<UUID> taskUUIDs = taskRepository.getTasksIDsInTeam(idTeam);
+    public List<TaskResponse> getTasksInTeam(String idTeam) {
+        UUID idTeamID = UUID.fromString(idTeam);
+        List<UUID> taskUUIDs = taskRepository.getTasksIDsInTeam(idTeamID);
         List<Task> alltasks = new ArrayList<>();
         for (UUID uuidTask: taskUUIDs) {
             Task task = taskRepository.getTaskOnID(uuidTask);
             alltasks.add(task);
         }
         return convertTaskToTasksResponse(alltasks);
+    }
+    @Transactional
+    public void changeCompleteness(String idTeam) {
+        Boolean value = false;
+        UUID idTeamID = UUID.fromString(idTeam);
+        Task task = taskRepository.getTaskOnID(idTeamID);
+        if (task.isTaskcompleted()) {
+            value = false;
+        } else {
+            value = true;
+        }
+        taskRepository.changeCompleteness(idTeamID, value);
+
     }
 
 

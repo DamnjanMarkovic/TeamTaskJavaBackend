@@ -18,6 +18,11 @@ import java.util.UUID;
 public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Modifying
+    @Query(value = "DELETE FROM users WHERE status is false",
+            nativeQuery = true)
+    void removeIfFalse();
+
+    @Modifying
     @Transactional
     @Query("UPDATE User us set us.userFirstName =(:userFirstName) where us.id =(:id)")
     void updateUserName(String userFirstName, UUID id);

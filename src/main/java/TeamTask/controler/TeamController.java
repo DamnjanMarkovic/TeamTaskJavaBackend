@@ -50,9 +50,9 @@ public class TeamController {
 
 
     @GetMapping("/{id}")
-    public Optional<Teams> getRestaurant(@PathVariable Integer id) throws Exception {
+    public Teams getTeam(@PathVariable String id) throws Exception {
         try {
-            return teamService.getRestaurant(id);
+            return teamService.getTeam(id);
         } catch (Exception e){
             throw new Exception("poruka", e.initCause(e.getCause()));
         }

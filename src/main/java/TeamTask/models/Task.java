@@ -21,11 +21,11 @@ public class Task {
     private boolean taskcompleted;
 
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "team_task", joinColumns = @JoinColumn(name = "taskid"), inverseJoinColumns = @JoinColumn(name = "id_team"))
     private Teams teams;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_task", joinColumns = @JoinColumn(name = "taskid"), inverseJoinColumns = @JoinColumn(name = "id_user"))
     private User user;
 

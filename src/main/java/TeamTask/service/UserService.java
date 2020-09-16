@@ -80,6 +80,8 @@ public class UserService implements UserDetailsService {
     }
     @Transactional
     public void deleteUser (UUID id_user) {
+//        UUID idUUID = UUID.fromString(id_user);
+//
         Optional<User> user1 = userRepository.findById(id_user);
         Images images = new Images(user1.get().getUserFirstName());
         List<UUID> taskUUIDS = new ArrayList<>();
@@ -98,12 +100,45 @@ public class UserService implements UserDetailsService {
             teamTaskService.deleteTeamTaskOnTeamID(task.getTaskid());
         }
         System.out.println(images);
-            imagesRepository.removeImage(images.getImagename());
+        imagesRepository.deleteById(user1.get().getImages().getId_image());
+//            imagesRepository.removeImage(images.getImagename());
 
         User user = new User(id_user);
         userRepository.delete(user);
+//        userRepository.deleteById(id_user);
 
     }
+    public void confirmdeleteUser (UUID id_user) {
+
+        userRepository.removeIfFalse();
+    }
+
+
+//    public void deleteUser (UUID id_user) {
+//        Optional<User> user1 = userRepository.findById(id_user);
+//        Images images = new Images(user1.get().getUserFirstName());
+//        List<UUID> taskUUIDS = new ArrayList<>();
+//        List<UUID> fullTaskList = new ArrayList<>();
+//
+//        taskUUIDS = taskService.returnTasksOnUserID(id_user);
+//        for (UUID idtask: taskUUIDS                 ) {
+//            fullTaskList.add(idtask);
+//        }
+//
+//        userTaskService.deleteUserTasksOnUserID(id_user);
+//
+//        for (UUID taskid:taskUUIDS             ) {
+//            Task task = new Task(taskid);
+//            taskRepository.delete(task);
+//            teamTaskService.deleteTeamTaskOnTeamID(task.getTaskid());
+//        }
+//        System.out.println(images);
+//        imagesRepository.removeImage(images.getImagename());
+//
+//        User user = new User(id_user);
+//        userRepository.delete(user);
+//
+//    }
 
 
 
@@ -236,7 +271,7 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public LoginResponse getUser(String id_userString, String jwt) {
+    public LoginResponse getLoggedInUser(String id_userString, String jwt) {
         UUID id_user = UUID.fromString(id_userString);
         Optional<User> us = userRepository.findById(id_user);
         LoginResponse loginResponse = new LoginResponse(us.get().getId(), jwt, us.get().getUserName(), us.get().getUserFirstName(),

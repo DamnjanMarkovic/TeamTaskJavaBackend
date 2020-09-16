@@ -269,6 +269,14 @@ public class UserService implements UserDetailsService {
         }
         return listUserResponse;
     }
+    @Transactional
+    public String checkIfUsernameExists(String username) {
+        Integer numberOFUsers = userRepository.checkUserexistance(username);
+        if (numberOFUsers > 0) {
+            return String.valueOf(userRepository.checkIfUsernameExists(username));
+        }
+        return "User not existing in the DB";
+    }
 
     @Transactional
     public LoginResponse getLoggedInUser(String id_userString, String jwt) {

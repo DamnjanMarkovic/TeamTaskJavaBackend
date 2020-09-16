@@ -1,5 +1,6 @@
 package TeamTask.controler;
 
+import TeamTask.models.dto.FaceOrAppleLoginRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -46,12 +47,8 @@ public class LoginController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<?> createAuthenticationToken(@Valid @RequestBody LoginRequest loginRequest) throws Exception {
 
-
-
         Authentication authentication = null;
 
-        //check if user is logged in
-        //UUID uuid = UUID.randomUUID();
         try {
             authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
@@ -77,5 +74,38 @@ public class LoginController {
                 myLoginDetails.getImages().getId_image(), myLoginDetails.getRoles().stream().map(Role::getRole).collect(Collectors.toSet()), myLoginDetails.getTeams().getId_team(), myLoginDetails.getTeams().getName_team()));
 
     }
+            // ovde treba napraviti logovanje sa email-om i  tokenom za postojece user-e, odnosno vracanje tokena
+//    @RequestMapping(value = "/loginFacebookOrAppleUser", method = RequestMethod.POST)
+//    public ResponseEntity<?> loginFacebookOrAppleUser(@Valid @RequestBody FaceOrAppleLoginRequest faceOrAppleLoginRequest) throws Exception {
+
+//        Authentication authentication = null;
+//
+//        //check if user is logged in
+//        //UUID uuid = UUID.randomUUID();
+//        try {
+//            authentication = authenticationManager.authenticate(
+//                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
+//            );
+//        } catch (BadCredentialsException e) {
+//
+//            throw new Exception("Password doesn't match username", e.getCause());
+//
+//        } catch (EntityNotFoundException ew){
+//            ew.printStackTrace();
+//
+//        } catch (Exception ef){
+//
+//            throw new Exception("Username does not exist in the database.", ef.getCause());
+//        }
+//        final UserDetails userDetails = myuserService
+//                .loadUserByUsername(loginRequest.getUsername());
+//        final String jwt = jwtTokenUtil.generateToken(userDetails);
+//
+//        MyLoginDetails myLoginDetails = (MyLoginDetails) authentication.getPrincipal();
+//
+//        return ResponseEntity.ok(new LoginResponse(myLoginDetails.getId(), jwt, myLoginDetails.getUsername(), myLoginDetails.getUserFirstName(),
+//                myLoginDetails.getImages().getId_image(), myLoginDetails.getRoles().stream().map(Role::getRole).collect(Collectors.toSet()), myLoginDetails.getTeams().getId_team(), myLoginDetails.getTeams().getName_team()));
+//
+//    }
 
 }

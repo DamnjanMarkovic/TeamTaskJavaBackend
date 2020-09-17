@@ -79,6 +79,11 @@ public class UserController {
 		return userService.getUsersInTeam(idTeam);
 	}
 
+	@GetMapping("/checkIfUsernameExists/{username}")
+	public String checkIfUsernameExists(@PathVariable ("username") String username) throws EntityNotFoundException {
+
+		return userService.checkIfUsernameExists(username);
+	}
 
 	@GetMapping("/getLoggedInUser/{id_user}/{jwt}")
 	public LoginResponse getLoggedInUser(@PathVariable ("id_user") String id_user, @PathVariable("jwt") String jwt) throws EntityNotFoundException {
@@ -158,7 +163,7 @@ public class UserController {
 		return result;
 	}
 
-
+	//ovde treba proveriti  da li je pass "faceOrAppleUser" - ako jeste, to je logovanje fejsbuk ili apple
 	@PostMapping(value = "/signUpUser", consumes = {"multipart/form-data"})
 	public String saveUser (@RequestParam("imageFile") @PathVariable MultipartFile imageFile,
 							UserRequest userRequest){
@@ -181,6 +186,8 @@ public class UserController {
 		}
 		return result;
 	}
+
+	//ovde treba proveriti  da li je pass "faceOrAppleUser" - ako jeste, to je logovanje fejsbuk ili apple
 	@PostMapping(value = "/addNewUserInTeam", consumes = {"multipart/form-data"})
 	public String addNewUserInTeam (@RequestParam("imageFile") @PathVariable MultipartFile imageFile,
 							UserRequest userRequest){

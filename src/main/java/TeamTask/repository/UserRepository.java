@@ -38,6 +38,12 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     @Query("SELECT user from User user where user.id =(:id)")
     User getUserOnID(UUID id);
 
+    @Query(value = "select count(*) from users WHERE username = ?",
+            nativeQuery = true)
+    Integer checkUserexistance(String username);
+
+    @Query("SELECT u.id from User u where u.userName =(:userName)")
+    UUID checkIfUsernameExists(String userName);
 
     Optional<User> findByUserName(String username);
 

@@ -25,13 +25,13 @@ public class LoginController {
 
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtTokenUtil;
-    private final UserService myuserService;
+    private final UserService userService;
 
 
-    public LoginController(AuthenticationManager authenticationManager, JwtUtil jwtTokenUtil, UserService myuserService) {
+    public LoginController(AuthenticationManager authenticationManager, JwtUtil jwtTokenUtil, UserService userService) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenUtil = jwtTokenUtil;
-        this.myuserService = myuserService;
+        this.userService = userService;
     }
 
     @RequestMapping("/")
@@ -64,7 +64,7 @@ public class LoginController {
 
             throw new Exception("Username does not exist in the database.", ef.getCause());
         }
-        final UserDetails userDetails = myuserService
+        final UserDetails userDetails = userService
                 .loadUserByUsername(loginRequest.getUsername());
         final String jwt = jwtTokenUtil.generateToken(userDetails);
 
@@ -75,13 +75,12 @@ public class LoginController {
 
     }
             // ovde treba napraviti logovanje sa email-om i  tokenom za postojece user-e, odnosno vracanje tokena
-//    @RequestMapping(value = "/loginFacebookOrAppleUser", method = RequestMethod.POST)
-//    public ResponseEntity<?> loginFacebookOrAppleUser(@Valid @RequestBody FaceOrAppleLoginRequest faceOrAppleLoginRequest) throws Exception {
+    @RequestMapping(value = "/loginFacebookOrAppleUser", method = RequestMethod.POST)
+    public ResponseEntity<?> loginFacebookOrAppleUser(@Valid @RequestBody FaceOrAppleLoginRequest faceOrAppleLoginRequest) throws Exception {
+        System.out.println("Username: " + faceOrAppleLoginRequest.getUserName());
+        System.out.println("Token: " + faceOrAppleLoginRequest.getToken());
+        Authentication authentication = null;
 
-//        Authentication authentication = null;
-//
-//        //check if user is logged in
-//        //UUID uuid = UUID.randomUUID();
 //        try {
 //            authentication = authenticationManager.authenticate(
 //                    new UsernamePasswordAuthenticationToken(loginRequest.getUsername(), loginRequest.getPassword())
@@ -97,15 +96,15 @@ public class LoginController {
 //
 //            throw new Exception("Username does not exist in the database.", ef.getCause());
 //        }
-//        final UserDetails userDetails = myuserService
-//                .loadUserByUsername(loginRequest.getUsername());
-//        final String jwt = jwtTokenUtil.generateToken(userDetails);
-//
-//        MyLoginDetails myLoginDetails = (MyLoginDetails) authentication.getPrincipal();
-//
-//        return ResponseEntity.ok(new LoginResponse(myLoginDetails.getId(), jwt, myLoginDetails.getUsername(), myLoginDetails.getUserFirstName(),
-//                myLoginDetails.getImages().getId_image(), myLoginDetails.getRoles().stream().map(Role::getRole).collect(Collectors.toSet()), myLoginDetails.getTeams().getId_team(), myLoginDetails.getTeams().getName_team()));
-//
-//    }
+        final UserDetails userDetails = userService
+                .loadUserByUsername(faceOrAppleLoginRequest.getUserName());
+        final String jwt = jwtTokenUtil.generateToken(userDetails);
+
+        MyLoginDetails myLoginDetails = (MyLoginDetails) authentication.getPrincipal();
+
+        return ResponseEntity.ok(new LoginResponse(myLoginDetails.getId(), jwt, myLoginDetails.getUsername(), myLoginDetails.getUserFirstName(),
+                myLoginDetails.getImages().getId_image(), myLoginDetails.getRoles().stream().map(Role::getRole).collect(Collectors.toSet()), myLoginDetails.getTeams().getId_team(), myLoginDetails.getTeams().getName_team()));
+
+    }
 
 }

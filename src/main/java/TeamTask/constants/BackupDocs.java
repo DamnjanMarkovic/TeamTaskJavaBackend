@@ -4,6 +4,11 @@ public class BackupDocs {
 
 
     /*
+
+DELETE FROM users WHERE status is false
+Face usertoken:
+EAAzp5ZBQZBc1YBACunOOOCPyLtTOQbkIr4xQxsUj6mLNsv5B66wSRrRv2gXVQtLGJ1Ps2glQjeUEjd7M0C4ZBFlKZBGI0m1LkPPTKlEGyhTZB2N7cg3Y6vk8UQ0b4xIizYEQeiFcR6Wi6zlMYbqSE1s5Fr4RuhOdHwhaWDWj1gQZDZD
+
 Tim koji je visak:
 b2cedbbe-c30c-4684-888e-fcf7522a4730
 delete from teams

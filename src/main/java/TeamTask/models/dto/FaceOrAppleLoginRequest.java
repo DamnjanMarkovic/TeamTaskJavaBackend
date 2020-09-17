@@ -2,23 +2,23 @@ package TeamTask.models.dto;
 
 public class FaceOrAppleLoginRequest {
 
-    private String id_user;
+    private String userName;
     private String token;
 
-    public FaceOrAppleLoginRequest(String id_user, String token) {
-        this.id_user = id_user;
+    public FaceOrAppleLoginRequest(String userName, String token) {
+        this.userName = userName;
         this.token = token;
     }
 
     public FaceOrAppleLoginRequest() {
     }
 
-    public String getId_user() {
-        return id_user;
+    public String getUserName() {
+        return userName;
     }
 
-    public void setId_user(String id_user) {
-        this.id_user = id_user;
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
     public String getToken() {

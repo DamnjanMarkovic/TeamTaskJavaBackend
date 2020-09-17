@@ -1,13 +1,25 @@
 package TeamTask.models.dto;
 
+import java.util.UUID;
+
 public class FaceOrAppleLoginRequest {
 
     private String userName;
-    private String token;
+    private UUID user_id;
+//    private String token;
 
-    public FaceOrAppleLoginRequest(String userName, String token) {
+    public FaceOrAppleLoginRequest(String userName, UUID user_id) {
         this.userName = userName;
-        this.token = token;
+        this.user_id = user_id;
+//        this.token = token;
+    }
+
+    public UUID getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(UUID user_id) {
+        this.user_id = user_id;
     }
 
     public FaceOrAppleLoginRequest() {
@@ -21,11 +33,11 @@ public class FaceOrAppleLoginRequest {
         this.userName = userName;
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
+//    public String getToken() {
+//        return token;
+//    }
+//
+//    public void setToken(String token) {
+//        this.token = token;
+//    }
 }

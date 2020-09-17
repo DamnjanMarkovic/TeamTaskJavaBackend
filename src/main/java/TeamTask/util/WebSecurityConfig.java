@@ -44,7 +44,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.authorizeRequests().antMatchers("/").permitAll()
 				.antMatchers("/login").permitAll()
 				.antMatchers("/loginFacebookOrAppleUser").permitAll()
-				.antMatchers("/rest/users/getLoggedInUser/{id_user}/{jwt}").permitAll()
+//				.antMatchers("/rest/users/getLoggedInUser/{id_user}/{jwt}").permitAll()
 				.antMatchers("/rest/teams/ifExists/{id_team}").permitAll()
 				.antMatchers("/rest/users/signUpUser").permitAll()
 				.antMatchers("/rest/users/addNewUserInTeam").permitAll()

@@ -50,11 +50,6 @@ public class UserController {
 		return userService.getAll();
 	}
 
-//	@GetMapping(value = "/tableID/{table_number}/{id_restaurant}")
-//	public DinningTable getSpecificDinningTable(
-//			@PathVariable("table_number") int table_number,
-//
-//			@PathVariable("id_restaurant") int id_restaurant) {
 
 	@PutMapping("/updateUserName/{userID}/{newName}")
 	public void updateUserName(@PathVariable ("userID") String userID, @PathVariable("newName") String newName) throws EntityNotFoundException {
@@ -62,9 +57,6 @@ public class UserController {
 	}
 
 
-//	@PostMapping(value = "/signUpUser", consumes = {"multipart/form-data"})
-//	public String saveUser (@RequestParam("imageFile") @PathVariable MultipartFile imageFile,
-//							UserRequest userRequest){
 	@PutMapping(value = "/updateUserImage", consumes = {"multipart/form-data"})
 	public void updateUserImage(@RequestParam("imageFile") @PathVariable MultipartFile imageFile,
 								String imagename) throws Exception {
@@ -86,10 +78,14 @@ public class UserController {
 	}
 
 	@GetMapping("/getLoggedInUser/{id_user}/{jwt}")
-	public LoginResponse getLoggedInUser(@PathVariable ("id_user") String id_user, @PathVariable("jwt") String jwt) throws EntityNotFoundException {
+	public LoginResponse getLoggedInUser(@PathVariable ("id_user") String id_user) throws EntityNotFoundException {
 
-		return userService.getLoggedInUser(id_user, jwt);
+		return userService.getLoggedInUser(id_user);
 	}
+//	@DeleteMapping("/deleteUserID/{id_user}")
+//	public void deleteUserID (@PathVariable UUID id_user) throws Exception {
+//		userService.confirmdeleteUser(id_user);
+//	}
 
 	@DeleteMapping("/deleteUser/{id_user}")
 	public void deleteUser (@PathVariable UUID id_user) throws Exception {

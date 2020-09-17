@@ -5,6 +5,11 @@ public class BackupDocs {
 
     /*
 
+    delete from users
+where id_user = '25a7bd6a-0cb5-4905-8c7f-16f0ddcaf61b';
+
+
+ALTER TABLE users ADD UNIQUE (username);
 DELETE FROM users WHERE status is false
 Face usertoken:
 EAAzp5ZBQZBc1YBACunOOOCPyLtTOQbkIr4xQxsUj6mLNsv5B66wSRrRv2gXVQtLGJ1Ps2glQjeUEjd7M0C4ZBFlKZBGI0m1LkPPTKlEGyhTZB2N7cg3Y6vk8UQ0b4xIizYEQeiFcR6Wi6zlMYbqSE1s5Fr4RuhOdHwhaWDWj1gQZDZD

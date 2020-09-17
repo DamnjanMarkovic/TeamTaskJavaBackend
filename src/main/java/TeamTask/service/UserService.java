@@ -99,7 +99,6 @@ public class UserService implements UserDetailsService {
             taskRepository.delete(task);
             teamTaskService.deleteTeamTaskOnTeamID(task.getTaskid());
         }
-        System.out.println(images);
         imagesRepository.deleteById(user1.get().getImages().getId_image());
 //            imagesRepository.removeImage(images.getImagename());
 
@@ -108,36 +107,14 @@ public class UserService implements UserDetailsService {
 //        userRepository.deleteById(id_user);
 
     }
-    public void confirmdeleteUser (UUID id_user) {
-
-        userRepository.removeIfFalse();
-    }
-
-
-//    public void deleteUser (UUID id_user) {
-//        Optional<User> user1 = userRepository.findById(id_user);
-//        Images images = new Images(user1.get().getUserFirstName());
-//        List<UUID> taskUUIDS = new ArrayList<>();
-//        List<UUID> fullTaskList = new ArrayList<>();
-//
-//        taskUUIDS = taskService.returnTasksOnUserID(id_user);
-//        for (UUID idtask: taskUUIDS                 ) {
-//            fullTaskList.add(idtask);
-//        }
-//
-//        userTaskService.deleteUserTasksOnUserID(id_user);
-//
-//        for (UUID taskid:taskUUIDS             ) {
-//            Task task = new Task(taskid);
-//            taskRepository.delete(task);
-//            teamTaskService.deleteTeamTaskOnTeamID(task.getTaskid());
-//        }
-//        System.out.println(images);
-//        imagesRepository.removeImage(images.getImagename());
-//
+//    public void confirmdeleteUser (UUID id_user) {
 //        User user = new User(id_user);
 //        userRepository.delete(user);
 //
+//        String idString = String.valueOf(id_user);
+//        UUID idUUID = UUID.fromString(idString);
+//        System.out.println(idUUID);
+//        userRepository.removeIfFalse(idUUID);
 //    }
 
 
@@ -145,35 +122,40 @@ public class UserService implements UserDetailsService {
     @Transactional
     public void deleteUsersInTeam (UUID id_team) {
         List<UUID> userIDsLIst = userTeamsRepository.getUserIDsOnTeamID(id_team);
-        List<UUID> taskUUIDS = new ArrayList<>();
-        List<UUID> fullTaskList = new ArrayList<>();
         for (UUID id_user: userIDsLIst             ) {
-            taskUUIDS = taskService.returnTasksOnUserID(id_user);
-            for (UUID idtask: taskUUIDS                 ) {
-                fullTaskList.add(idtask);
-            }
-        }
-//        System.out.println(fullTaskList.size());
-//        System.out.println("ovde smo");
-        for (UUID id_user: taskUUIDS             ) {
-            userTaskService.deleteUserTasksOnUserID(id_user);
-        }
-        for (UUID taskid:taskUUIDS             ) {
-            Task task = new Task(taskid);
-            taskRepository.delete(task);
+            deleteUser(id_user);
         }
 
-        teamTaskService.deleteTeamTaskOnTeamID(id_team);
 
-        for (UUID id_user: userIDsLIst             ) {
-            taskService.deleteTasksOnUserID(id_user);
-        }
-        for (UUID id_user: userIDsLIst             ) {
-//            UUID id_userSpecial = UUID.fromString(id_user.toString());
-//            userRepository.deleteById(id_userSpecial);
-            User user = new User(id_user);
-            userRepository.delete(user);
-        }
+
+//        List<UUID> taskUUIDS = new ArrayList<>();
+//        List<UUID> fullTaskList = new ArrayList<>();
+//        for (UUID id_user: userIDsLIst             ) {
+//            taskUUIDS = taskService.returnTasksOnUserID(id_user);
+//            for (UUID idtask: taskUUIDS                 ) {
+//                fullTaskList.add(idtask);
+//            }
+//        }
+//        for (UUID id_user: taskUUIDS             ) {
+//            userTaskService.deleteUserTasksOnUserID(id_user);
+//
+//        }
+//        for (UUID taskid:taskUUIDS             ) {
+//            Task task = new Task(taskid);
+//            taskRepository.delete(task);
+//        }
+//
+//
+//        teamTaskService.deleteTeamTaskOnTeamID(id_team);
+//
+//        for (UUID id_user: userIDsLIst             ) {
+//            taskService.deleteTasksOnUserID(id_user);
+//        }
+//        for (UUID id_user: userIDsLIst             ) {
+//            User user = new User(id_user);
+//
+//            userRepository.delete(user);
+//        }
     }
 
     @Transactional
@@ -256,9 +238,6 @@ public class UserService implements UserDetailsService {
         return result;
     }
 
-
-
-
     public List<UserResponse> returnUsersFormated(List<User> allUsers){
         List<UserResponse> listUserResponse = new ArrayList<>();
         for (User us : allUsers) {
@@ -269,39 +248,27 @@ public class UserService implements UserDetailsService {
         }
         return listUserResponse;
     }
+
+
     @Transactional
     public String checkIfUsernameExists(String username) {
         Integer numberOFUsers = userRepository.checkUserexistance(username);
         if (numberOFUsers > 0) {
-            return String.valueOf(userRepository.checkIfUsernameExists(username));
+            return String.valueOf(userRepository.getUserIDBasedOnUserName(username));
         }
         return "User not existing in the DB";
     }
 
     @Transactional
-    public LoginResponse getLoggedInUser(String id_userString, String jwt) {
+    public LoginResponse getLoggedInUser(String id_userString) {
         UUID id_user = UUID.fromString(id_userString);
         Optional<User> us = userRepository.findById(id_user);
-        LoginResponse loginResponse = new LoginResponse(us.get().getId(), jwt, us.get().getUserName(), us.get().getUserFirstName(),
+        LoginResponse loginResponse = new LoginResponse(us.get().getId(), "jwt", us.get().getUserName(), us.get().getUserFirstName(),
                 us.get().getImages().getId_image(), us.get().getRoles().stream().map(Role::getRole).collect(Collectors.toSet()), us.get().getTeams().getId_team(), us.get().getTeams().getName_team());
 
         return loginResponse;
 
-
-////        List<User> allUsers = userRepository.findAllById(Collections.singleton(id));
-//        List<UserResponse>listResponse = returnUsersFormated(allUsers);
-//        if (listResponse.isEmpty()) {
-//            throw new EntityNotFoundException();
-//        }
-//        return listResponse;
-//        return null;
     }
-//    @Transactional
-//    public List<UserResponse> getUserOnEmail(String useremail) {
-//        List<User> allUsers = new ArrayList<>();
-//        allUsers.add(userRepository.getUserOnEmail(useremail));
-//       return returnUsersFormated(allUsers);
-//
-//    }
+
 }
 

@@ -17,10 +17,11 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
 
-    @Modifying
-    @Query(value = "DELETE FROM users WHERE status is false",
-            nativeQuery = true)
-    void removeIfFalse();
+//    @Modifying
+//    @Transactional
+//    @Query(value = "DELETE id_user FROM users WHERE id_user = ?",
+//            nativeQuery = true)
+//    void removeIfFalse(UUID id);
 
     @Modifying
     @Transactional
@@ -43,7 +44,7 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     Integer checkUserexistance(String username);
 
     @Query("SELECT u.id from User u where u.userName =(:userName)")
-    UUID checkIfUsernameExists(String userName);
+    UUID getUserIDBasedOnUserName(String userName);
 
     Optional<User> findByUserName(String username);
 

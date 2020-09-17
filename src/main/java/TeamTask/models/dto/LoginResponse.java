@@ -8,7 +8,7 @@ import java.util.UUID;
 public class LoginResponse implements Serializable {
 
     private UUID id_user;
-    private final String jwt;
+    private String jwt;
     private String userName;
     private String userFirstName;
     private Integer id_image;
@@ -93,9 +93,12 @@ public class LoginResponse implements Serializable {
         this.id_image = id_image;
     }
 
+
     public String getJwt() {
         return jwt;
     }
 
-
+    public void setJwt(String jwt) {
+        this.jwt = jwt;
+    }
 }

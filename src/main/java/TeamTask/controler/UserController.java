@@ -170,7 +170,7 @@ public class UserController {
 							HttpServletRequest request, UserRequest userRequest){
 		String result = null;
 		String response = null;
-		System.out.println("nesto");
+		System.out.println("novi user registrovan");
 		Images image = new Images();
 		image.setImagename(imageFile.getOriginalFilename());
 

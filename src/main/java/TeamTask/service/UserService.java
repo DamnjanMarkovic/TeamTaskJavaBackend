@@ -280,11 +280,11 @@ public class UserService implements UserDetailsService, IUserService {
 
     @Override
     public User registerNewUserAccount(UserRequest userRequest) throws Exception {
-        if (emailExist(userRequest.getUsername())) {
-            throw new Exception (
-                    "There is an account with that email adress: "
-                            + userRequest.getUsername());
-        }
+//        if (emailExist(userRequest.getUsername())) {
+//            throw new Exception (
+//                    "There is an account with that email adress: "
+//                            + userRequest.getUsername());
+//        }
         return saveRegisteredUser(userRequest);
     }
 

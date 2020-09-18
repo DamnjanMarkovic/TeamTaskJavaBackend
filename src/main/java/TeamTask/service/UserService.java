@@ -1,5 +1,7 @@
 package TeamTask.service;
 
+import TeamTask.component.IUserService;
+import TeamTask.component.VerificationTokenRepository;
 import TeamTask.models.*;
 import TeamTask.models.dto.*;
 import TeamTask.repository.*;
@@ -16,7 +18,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService implements UserDetailsService {
+public class UserService implements UserDetailsService, IUserService {
 //public class UserService {
 
     private final UserRepository userRepository;
@@ -31,8 +33,9 @@ public class UserService implements UserDetailsService {
     private final UserTaskService userTaskService;
     private final TeamTaskService teamTaskService;
     private final JwtUtil jwtTokenUtil;
+    private final VerificationTokenRepository tokenRepository;
 
-    public UserService(UserRepository userRepository, ImagesRepository imagesRepository, TeamRepository teamRepository, UserTeamsRepository userTeamsRepository, UserImagesRepository userImagesRepository, UserRolesRepository userRolesRepository, TaskRepository taskRepository, UserTaskRepository userTaskRepository, TaskService taskService, UserTaskService userTaskService, TeamTaskService teamTaskService, JwtUtil jwtTokenUtil) {
+    public UserService(UserRepository userRepository, ImagesRepository imagesRepository, TeamRepository teamRepository, UserTeamsRepository userTeamsRepository, UserImagesRepository userImagesRepository, UserRolesRepository userRolesRepository, TaskRepository taskRepository, UserTaskRepository userTaskRepository, TaskService taskService, UserTaskService userTaskService, TeamTaskService teamTaskService, JwtUtil jwtTokenUtil, VerificationTokenRepository tokenRepository) {
         this.userRepository = userRepository;
         this.imagesRepository = imagesRepository;
         this.teamRepository = teamRepository;
@@ -45,6 +48,7 @@ public class UserService implements UserDetailsService {
         this.userTaskService = userTaskService;
         this.teamTaskService = teamTaskService;
         this.jwtTokenUtil = jwtTokenUtil;
+        this.tokenRepository = tokenRepository;
     }
 
     @Transactional
@@ -197,13 +201,17 @@ public class UserService implements UserDetailsService {
         return returnUsersFormated(allUsers);
     }
 
-
-    @Transactional
-    public String save(UserRequest userRequest) throws SQLException {
+//    @Override
+//    public void saveRegisteredUser(User user) {
+//
+//    }
+    @Override
+//    @Transactional
+    public User saveRegisteredUser(UserRequest userRequest) {
     String result = null;
 
         User user = new User(userRequest.getUsername(), userRequest.getPassword(),
-                true, userRequest.getUserFirstName());
+                false, userRequest.getUserFirstName());
         Teams team = new Teams(userRequest.getName_team());
         System.out.println("tim je ");
         System.out.println(team.getId_team());
@@ -217,14 +225,14 @@ public class UserService implements UserDetailsService {
         userTeamsRepository.save(userTeams);
         userImagesRepository.save(userImages);
         result = "User inserted in the DB";
-        return result;
+        return user;
     }
     @Transactional
-    public String addNewUserInTeam(UserRequest userRequest) throws SQLException {
+    public User addNewUserInTeam(UserRequest userRequest) throws SQLException {
         String result = null;
-
+//da li ovde treba active true?
         User user = new User(userRequest.getUsername(), userRequest.getPassword(),
-                true, userRequest.getUserFirstName());
+                false, userRequest.getUserFirstName());
 
         user = userRepository.save(user);
         UserTeams userTeams = new UserTeams(user.getId(), userRequest.getId_team());
@@ -235,7 +243,7 @@ public class UserService implements UserDetailsService {
         userTeamsRepository.save(userTeams);
         userImagesRepository.save(userImages);
         result = "User inserted in the DB";
-        return result;
+        return user;
     }
 
     public List<UserResponse> returnUsersFormated(List<User> allUsers){
@@ -270,5 +278,46 @@ public class UserService implements UserDetailsService {
 
     }
 
+    @Override
+    public User registerNewUserAccount(UserRequest userRequest) throws Exception {
+        if (emailExist(userRequest.getUsername())) {
+            throw new Exception (
+                    "There is an account with that email adress: "
+                            + userRequest.getUsername());
+        }
+        return saveRegisteredUser(userRequest);
+    }
+
+    @Override
+    public User registerNewUserAccountForNewUser(UserRequest userRequest) throws Exception {
+        if (emailExist(userRequest.getUsername())) {
+            throw new Exception (
+                    "There is an account with that email adress: "
+                            + userRequest.getUsername());
+        }
+        return addNewUserInTeam(userRequest);
+    }
+
+    @Override
+    public User getUser(String verificationToken) {
+        User user = tokenRepository.findByToken(verificationToken).getUser();
+        return user;
+    }
+    private boolean emailExist(String email) {
+        return userRepository.findByUserName(email) != null;
+    }
+
+
+
+    @Override
+    public void createVerificationToken(User user, String token) {
+        VerificationToken myToken = new VerificationToken(user.getId(), token);
+        tokenRepository.save(myToken);
+    }
+
+    @Override
+    public VerificationToken getVerificationToken(String VerificationToken) {
+        return tokenRepository.findByToken(VerificationToken);
+    }
 }
 

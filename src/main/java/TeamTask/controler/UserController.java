@@ -1,10 +1,13 @@
 package TeamTask.controler;
 
+import TeamTask.models.OnRegistrationCompleteEvent;
+import TeamTask.models.User;
 import TeamTask.models.dto.LoginResponse;
 import TeamTask.models.dto.UsersInTeamResponse;
 import TeamTask.service.TaskService;
 import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +20,7 @@ import TeamTask.service.UserService;
 
 
 import javax.persistence.EntityNotFoundException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.*;
 import java.sql.SQLException;
@@ -36,7 +40,8 @@ public class UserController {
 	private final UserService userService;
 	@Autowired
 	private final TaskService taskService;
-
+	@Autowired
+	ApplicationEventPublisher eventPublisher;
 	@Autowired
 	private ImagesService imagesService;
 
@@ -151,9 +156,9 @@ public class UserController {
 		String result = null;
 		String response = null;
 		try {
-			response = userService.save(userRequest);
+			User user = userService.saveRegisteredUser(userRequest);
 				result = response;
-		} catch (SQLException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return result;
@@ -162,7 +167,7 @@ public class UserController {
 	//ovde treba proveriti  da li je pass "faceOrAppleUser" - ako jeste, to je dodavanje korisnika fejsbuk ili apple
 	@PostMapping(value = "/signUpUser", consumes = {"multipart/form-data"})
 	public String saveUser (@RequestParam("imageFile") @PathVariable MultipartFile imageFile,
-							UserRequest userRequest){
+							HttpServletRequest request, UserRequest userRequest){
 		String result = null;
 		String response = null;
 		System.out.println("nesto");
@@ -173,7 +178,10 @@ public class UserController {
 
 			Integer id_image = imagesService.saveSpecificImage(imageFile, image);
 			userRequest.setId_image(id_image);
-			response = userService.save(userRequest);
+			User user = userService.registerNewUserAccount(userRequest);
+			String appUrl = request.getContextPath();
+			eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user,
+					request.getLocale(), appUrl));
 			result = response;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -186,7 +194,7 @@ public class UserController {
 	//ovde treba proveriti  da li je pass "faceOrAppleUser" - ako jeste, to je dodavanje korisnika fejsbuk ili apple
 	@PostMapping(value = "/addNewUserInTeam", consumes = {"multipart/form-data"})
 	public String addNewUserInTeam (@RequestParam("imageFile") @PathVariable MultipartFile imageFile,
-							UserRequest userRequest){
+									HttpServletRequest request, UserRequest userRequest){
 		String result = null;
 		String response = null;
 		System.out.println("nesto");
@@ -196,8 +204,10 @@ public class UserController {
 		try {
 			Integer id_image = imagesService.saveSpecificImage(imageFile, image);
 			userRequest.setId_image(id_image);
-			response = userService.addNewUserInTeam(userRequest);
-			result = response;
+			User user = userService.addNewUserInTeam(userRequest);
+			String appUrl = request.getContextPath();
+			eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user,
+					request.getLocale(), appUrl));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {

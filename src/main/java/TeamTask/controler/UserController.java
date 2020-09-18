@@ -180,8 +180,8 @@ public class UserController {
 			userRequest.setId_image(id_image);
 			User user = userService.registerNewUserAccount(userRequest);
 			String appUrl = request.getContextPath();
-//			eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user,
-//					request.getLocale(), appUrl));
+			eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user,
+					request.getLocale(), appUrl));
 			result = response;
 		} catch (SQLException e) {
 			e.printStackTrace();

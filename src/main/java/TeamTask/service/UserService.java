@@ -211,7 +211,7 @@ public class UserService implements UserDetailsService, IUserService {
     String result = null;
 
         User user = new User(userRequest.getUsername(), userRequest.getPassword(),
-                false, userRequest.getUserFirstName());
+                true, userRequest.getUserFirstName());
         Teams team = new Teams(userRequest.getName_team());
         System.out.println("tim je ");
         System.out.println(team.getId_team());
@@ -232,7 +232,7 @@ public class UserService implements UserDetailsService, IUserService {
         String result = null;
 //da li ovde treba active true?
         User user = new User(userRequest.getUsername(), userRequest.getPassword(),
-                false, userRequest.getUserFirstName());
+                true, userRequest.getUserFirstName());
 
         user = userRepository.save(user);
         UserTeams userTeams = new UserTeams(user.getId(), userRequest.getId_team());

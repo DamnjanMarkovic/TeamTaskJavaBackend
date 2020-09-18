@@ -24,7 +24,13 @@ public class User {
     private boolean active;
     @Column(name = "userfirstname")
     private String userFirstName;
+//    @Column(name = "enabled")
+//    private boolean enabled;
 
+    public User() {
+        super();
+//        this.enabled=false;
+    }
 //    private Integer id_image;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -74,8 +80,8 @@ public class User {
         this.roles = roles;
     }
 
-    public User() {
-    }
+//    public User() {
+//    }
 
 //    public User(UUID id, String userName, String password, boolean active, String userFirstName, Integer id_image) {
 //        this.id = id;

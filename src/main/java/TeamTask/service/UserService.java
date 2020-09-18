@@ -208,13 +208,10 @@ public class UserService implements UserDetailsService, IUserService {
     @Override
 //    @Transactional
     public User saveRegisteredUser(UserRequest userRequest) {
-    String result = null;
 
         User user = new User(userRequest.getUsername(), userRequest.getPassword(),
-                true, userRequest.getUserFirstName());
+                false, userRequest.getUserFirstName());
         Teams team = new Teams(userRequest.getName_team());
-        System.out.println("tim je ");
-        System.out.println(team.getId_team());
         team = teamRepository.save(team);
         user = userRepository.save(user);
         UserTeams userTeams = new UserTeams(user.getId(), team.getId_team());
@@ -224,7 +221,6 @@ public class UserService implements UserDetailsService, IUserService {
         userRolesRepository.save(userRole);
         userTeamsRepository.save(userTeams);
         userImagesRepository.save(userImages);
-        result = "User inserted in the DB";
         return user;
     }
     @Transactional
@@ -232,7 +228,7 @@ public class UserService implements UserDetailsService, IUserService {
         String result = null;
 //da li ovde treba active true?
         User user = new User(userRequest.getUsername(), userRequest.getPassword(),
-                true, userRequest.getUserFirstName());
+                false, userRequest.getUserFirstName());
 
         user = userRepository.save(user);
         UserTeams userTeams = new UserTeams(user.getId(), userRequest.getId_team());
@@ -256,6 +252,14 @@ public class UserService implements UserDetailsService, IUserService {
         }
         return listUserResponse;
     }
+
+
+    @Transactional
+    public void setActiveUser(User user) {
+        //set active
+        userRepository.setActiveUser(user.getId());
+    }
+
 
 
     @Transactional
@@ -311,9 +315,15 @@ public class UserService implements UserDetailsService, IUserService {
 
     @Override
     public void createVerificationToken(User user, String token) {
-        VerificationToken myToken = new VerificationToken(user.getId(), token);
-        tokenRepository.save(myToken);
+        VerificationToken newUserToken = new VerificationToken(token, user);
+        tokenRepository.save(newUserToken);
     }
+
+//    @Override
+//    public void createVerificationToken(User user, String token) {
+//        VerificationToken newUserToken = new VerificationToken(token, user);
+//        tokenDAO.save(newUserToken);
+//    }
 
     @Override
     public VerificationToken getVerificationToken(String VerificationToken) {

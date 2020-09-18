@@ -2,7 +2,7 @@ package TeamTask.component;
 
 import TeamTask.models.User;
 import TeamTask.models.dto.UserRequest;
-import TeamTask.models.dto.VerificationToken;
+import TeamTask.models.VerificationToken;
 
 public interface IUserService {
 
@@ -17,4 +17,6 @@ public interface IUserService {
     void createVerificationToken(User user, String token);
 
     VerificationToken getVerificationToken(String VerificationToken);
+
+//    public void createVerificationToken(User user, String token);
 }

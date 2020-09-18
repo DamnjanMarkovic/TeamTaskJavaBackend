@@ -17,11 +17,10 @@ import java.util.UUID;
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
 
-//    @Modifying
-//    @Transactional
-//    @Query(value = "DELETE id_user FROM users WHERE id_user = ?",
-//            nativeQuery = true)
-//    void removeIfFalse(UUID id);
+    @Modifying
+    @Transactional
+    @Query("UPDATE User us set us.active = true where us.id =(:id)")
+    void setActiveUser(UUID id);
 
     @Modifying
     @Transactional

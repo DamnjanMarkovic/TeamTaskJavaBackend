@@ -1,7 +1,7 @@
 package TeamTask.component;
 
 import TeamTask.models.User;
-import TeamTask.models.dto.VerificationToken;
+import TeamTask.models.VerificationToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface VerificationTokenRepository

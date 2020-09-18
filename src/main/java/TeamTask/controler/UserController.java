@@ -2,14 +2,18 @@ package TeamTask.controler;
 
 import TeamTask.models.OnRegistrationCompleteEvent;
 import TeamTask.models.User;
+import TeamTask.models.VerificationToken;
 import TeamTask.models.dto.LoginResponse;
 import TeamTask.models.dto.UsersInTeamResponse;
 import TeamTask.service.TaskService;
 import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 import TeamTask.models.Images;
@@ -19,15 +23,18 @@ import TeamTask.service.ImagesService;
 import TeamTask.service.UserService;
 
 
+import javax.mail.Message;
+import javax.mail.MessagingException;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.InternetAddress;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.*;
+import java.net.Authenticator;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -44,6 +51,8 @@ public class UserController {
 	ApplicationEventPublisher eventPublisher;
 	@Autowired
 	private ImagesService imagesService;
+	@Autowired
+	private MessageSource messages;
 
 	public UserController(UserService userService, TaskService taskService) {
 		this.userService = userService;
@@ -164,6 +173,28 @@ public class UserController {
 		return result;
 	}
 
+	@GetMapping("/confirmRegistration")
+	public String confirmRegistration(WebRequest request, Model model, @RequestParam("token") String token) {
+		Locale locale=request.getLocale();
+		VerificationToken verificationToken = userService.getVerificationToken(token);
+		if(verificationToken == null) {
+			String message = messages.getMessage("auth.message.invalidToken", null, locale);
+			model.addAttribute("message", message);
+			return "redirect:access-denied";
+		}
+		User user = verificationToken.getUser();
+		Calendar calendar = Calendar.getInstance();
+		if((verificationToken.getExpiryDate().getTime()-calendar.getTime().getTime())<=0) {
+			String message = messages.getMessage("auth.message.expired", null, locale);
+			model.addAttribute("message", message);
+			return "redirect:access-denied";
+		}
+
+		user.setActive(true);
+		userService.setActiveUser(user);
+		return null;
+	}
+
 	//ovde treba proveriti  da li je pass "faceOrAppleUser" - ako jeste, to je dodavanje korisnika fejsbuk ili apple
 	@PostMapping(value = "/signUpUser", consumes = {"multipart/form-data"})
 	public String saveUser (@RequestParam("imageFile") @PathVariable MultipartFile imageFile,
@@ -180,8 +211,9 @@ public class UserController {
 			userRequest.setId_image(id_image);
 			User user = userService.registerNewUserAccount(userRequest);
 			String appUrl = request.getContextPath();
-//			eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user,
-//					request.getLocale(), appUrl));
+			sendConfirmationMail();
+			eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user,
+					request.getLocale(), appUrl));
 			result = response;
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -189,6 +221,18 @@ public class UserController {
 			e.printStackTrace();
 		}
 		return result;
+	}
+
+	public void sendConfirmationMail() throws MessagingException {
+//		Authenticator auth = new MailAuthenticator();
+//		Session session = Session.getInstance(properties, auth);
+//		Message msg = new MimeMessage(session);
+//		msg.setSubject(subject);
+//		msg.setSentDate(new Date());
+//		msg.setFrom(new InternetAddress(from, false));
+//		msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(rcpt, false));
+//		msg.setContent(msgContent, "text/html");
+//		Transport.send(msg);
 	}
 
 	//ovde treba proveriti  da li je pass "faceOrAppleUser" - ako jeste, to je dodavanje korisnika fejsbuk ili apple

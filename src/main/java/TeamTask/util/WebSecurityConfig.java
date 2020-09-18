@@ -48,6 +48,7 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 				.antMatchers("/rest/teams/ifExists/{id_team}").permitAll()
 				.antMatchers("/rest/users/signUpUser").permitAll()
 				.antMatchers("/rest/users/addNewUserInTeam").permitAll()
+				.antMatchers("/rest/users/confirmRegistration").permitAll()
 				.antMatchers("/rest/users/checkIfUsernameExists/{username}").permitAll()
 				.anyRequest().authenticated().and()
 				.exceptionHandling().and().sessionManagement()

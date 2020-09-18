@@ -5,6 +5,15 @@ public class BackupDocs {
 
     /*
 
+    CREATE TABLE verification_token (
+            id UUID,
+            token TEXT NOT NULL,
+            created_date TEXT NOT NULL,
+            expiry_date TEXT NOT NULL
+
+    );
+
+
     delete from users
 where id_user = '25a7bd6a-0cb5-4905-8c7f-16f0ddcaf61b';
 

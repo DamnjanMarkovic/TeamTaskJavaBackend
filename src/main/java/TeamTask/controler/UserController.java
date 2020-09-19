@@ -1,17 +1,21 @@
 package TeamTask.controler;
 
-import TeamTask.models.OnRegistrationCompleteEvent;
+import TeamTask.emailConfirmation.OnRegistrationSuccessEvent;
 import TeamTask.models.User;
-import TeamTask.models.VerificationToken;
+import TeamTask.models.Token;
 import TeamTask.models.dto.LoginResponse;
 import TeamTask.models.dto.UsersInTeamResponse;
 import TeamTask.service.TaskService;
+import TeamTask.service.TokenService;
 import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,18 +27,13 @@ import TeamTask.service.ImagesService;
 import TeamTask.service.UserService;
 
 
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
 import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.*;
-import java.net.Authenticator;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -53,6 +52,15 @@ public class UserController {
 	private ImagesService imagesService;
 	@Autowired
 	private MessageSource messages;
+	@Autowired
+	private MailSender mailSender;
+	@Autowired
+	private TokenService tokenService;
+
+
+
+
+	private Logger logger = Logger.getLogger(getClass().getName());
 
 	public UserController(UserService userService, TaskService taskService) {
 		this.userService = userService;
@@ -62,6 +70,10 @@ public class UserController {
 	@GetMapping(value = "/all")
 	public List<UserResponse> getAll() {
 		return userService.getAll();
+	}
+	@GetMapping("/error")
+	public String indexPage() {
+		return messages.getMessage("message.message.expired", null, null);
 	}
 
 
@@ -96,16 +108,12 @@ public class UserController {
 
 		return userService.getLoggedInUser(id_user);
 	}
-//	@DeleteMapping("/deleteUserID/{id_user}")
-//	public void deleteUserID (@PathVariable UUID id_user) throws Exception {
-//		userService.confirmdeleteUser(id_user);
-//	}
+
 
 	@DeleteMapping("/deleteUser/{id_user}")
 	public void deleteUser (@PathVariable UUID id_user) throws Exception {
 
 		userService.deleteUser(id_user);
-//		userService.confirmdeleteUser(id_user);
 
 	}
 
@@ -165,7 +173,7 @@ public class UserController {
 		String result = null;
 		String response = null;
 		try {
-			User user = userService.saveRegisteredUser(userRequest);
+			User user = userService.registerUser(userRequest);
 				result = response;
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -176,7 +184,7 @@ public class UserController {
 	@GetMapping("/confirmRegistration")
 	public String confirmRegistration(WebRequest request, Model model, @RequestParam("token") String token) {
 		Locale locale=request.getLocale();
-		VerificationToken verificationToken = userService.getVerificationToken(token);
+		Token verificationToken = userService.getVerificationToken(token);
 		if(verificationToken == null) {
 			String message = messages.getMessage("auth.message.invalidToken", null, locale);
 			model.addAttribute("message", message);
@@ -192,72 +200,90 @@ public class UserController {
 
 		user.setActive(true);
 		userService.setActiveUser(user);
+		tokenService.removeToken(token);
 		return null;
 	}
 
 	//ovde treba proveriti  da li je pass "faceOrAppleUser" - ako jeste, to je dodavanje korisnika fejsbuk ili apple
 	@PostMapping(value = "/signUpUser", consumes = {"multipart/form-data"})
 	public String saveUser (@RequestParam("imageFile") @PathVariable MultipartFile imageFile,
-							HttpServletRequest request, UserRequest userRequest){
-		String result = null;
-		String response = null;
-		System.out.println("novi user registrovan");
+							UserRequest userRequest, BindingResult result, WebRequest request, Model model){
+		User registeredUser = new User();
+		if (result.hasErrors()) {
+			return "registration";
+		}
+		System.out.println("novi user ide u registraciju");
 		Images image = new Images();
 		image.setImagename(imageFile.getOriginalFilename());
-
+		if(userService.checkIfUsernameExists(userRequest.getUsername())!=null) {
+			model.addAttribute("error","There is already an account with this username: " + userRequest.getUsername());
+			logger.info("There is already an account with this username: " + userRequest.getUsername());
+//			return "registration";
+			System.out.println("cool");
+		}
 		try {
 
 			Integer id_image = imagesService.saveSpecificImage(imageFile, image);
 			userRequest.setId_image(id_image);
-			User user = userService.registerNewUserAccount(userRequest);
+			registeredUser = userService.registerUser(userRequest);
+			System.out.println("nesto");
 			String appUrl = request.getContextPath();
-			sendConfirmationMail();
-			eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user,
-					request.getLocale(), appUrl));
-			result = response;
+			OnRegistrationSuccessEvent event = new OnRegistrationSuccessEvent(registeredUser, request.getLocale(), appUrl);
+			eventPublisher.publishEvent(event);
+			sendConfirmationMail(event);
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return result;
+		return "registrationSuccess";
 	}
 
-	public void sendConfirmationMail() throws MessagingException {
-//		Authenticator auth = new MailAuthenticator();
-//		Session session = Session.getInstance(properties, auth);
-//		Message msg = new MimeMessage(session);
-//		msg.setSubject(subject);
-//		msg.setSentDate(new Date());
-//		msg.setFrom(new InternetAddress(from, false));
-//		msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(rcpt, false));
-//		msg.setContent(msgContent, "text/html");
-//		Transport.send(msg);
+
+	public void sendConfirmationMail(OnRegistrationSuccessEvent event) {
+		User user = event.getUser();
+		String token = UUID.randomUUID().toString();
+		userService.createVerificationToken(user,token);
+
+		String recipient = user.getUserName();
+		String subject = "Team Task Calendar App - Registration Confirmation";
+		String url
+				= event.getAppUrl() + "/confirmRegistration?token=" + token;
+		String message = messages.getMessage("message.registrationSuccessConfimationLink", null, event.getLocale());
+
+		SimpleMailMessage email = new SimpleMailMessage();
+		email.setTo(recipient);
+		email.setSubject(subject);
+		email.setText(message + "\nhttp://192.168.0.15:8080/rest/users" + url);
+		mailSender.send(email);
+
 	}
+
+
 
 	//ovde treba proveriti  da li je pass "faceOrAppleUser" - ako jeste, to je dodavanje korisnika fejsbuk ili apple
 	@PostMapping(value = "/addNewUserInTeam", consumes = {"multipart/form-data"})
 	public String addNewUserInTeam (@RequestParam("imageFile") @PathVariable MultipartFile imageFile,
 									HttpServletRequest request, UserRequest userRequest){
-		String result = null;
-		String response = null;
-		System.out.println("nesto");
+		User registeredUser = new User();
 		Images image = new Images();
 		image.setImagename(imageFile.getOriginalFilename());
 
 		try {
 			Integer id_image = imagesService.saveSpecificImage(imageFile, image);
 			userRequest.setId_image(id_image);
-			User user = userService.addNewUserInTeam(userRequest);
+			registeredUser = userService.registerUser(userRequest);
 			String appUrl = request.getContextPath();
-			eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user,
-					request.getLocale(), appUrl));
+			OnRegistrationSuccessEvent event = new OnRegistrationSuccessEvent(registeredUser, request.getLocale(), appUrl);
+			eventPublisher.publishEvent(event);
+			sendConfirmationMail(event);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return result;
+		return "registrationSuccess";
 	}
 
 

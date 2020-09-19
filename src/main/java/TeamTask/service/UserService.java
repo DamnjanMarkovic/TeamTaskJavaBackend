@@ -1,11 +1,12 @@
 package TeamTask.service;
 
-import TeamTask.component.IUserService;
-import TeamTask.component.VerificationTokenRepository;
+import TeamTask.emailConfirmation.IUserService;
+import TeamTask.repository.TokenRepository;
 import TeamTask.models.*;
 import TeamTask.models.dto.*;
 import TeamTask.repository.*;
 import TeamTask.util.JwtUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -33,9 +34,9 @@ public class UserService implements UserDetailsService, IUserService {
     private final UserTaskService userTaskService;
     private final TeamTaskService teamTaskService;
     private final JwtUtil jwtTokenUtil;
-    private final VerificationTokenRepository tokenRepository;
+    private final TokenService tokenService;
 
-    public UserService(UserRepository userRepository, ImagesRepository imagesRepository, TeamRepository teamRepository, UserTeamsRepository userTeamsRepository, UserImagesRepository userImagesRepository, UserRolesRepository userRolesRepository, TaskRepository taskRepository, UserTaskRepository userTaskRepository, TaskService taskService, UserTaskService userTaskService, TeamTaskService teamTaskService, JwtUtil jwtTokenUtil, VerificationTokenRepository tokenRepository) {
+    public UserService(UserRepository userRepository, ImagesRepository imagesRepository, TeamRepository teamRepository, UserTeamsRepository userTeamsRepository, UserImagesRepository userImagesRepository, UserRolesRepository userRolesRepository, TaskRepository taskRepository, UserTaskRepository userTaskRepository, TaskService taskService, UserTaskService userTaskService, TeamTaskService teamTaskService, JwtUtil jwtTokenUtil, TokenService tokenService) {
         this.userRepository = userRepository;
         this.imagesRepository = imagesRepository;
         this.teamRepository = teamRepository;
@@ -48,7 +49,7 @@ public class UserService implements UserDetailsService, IUserService {
         this.userTaskService = userTaskService;
         this.teamTaskService = teamTaskService;
         this.jwtTokenUtil = jwtTokenUtil;
-        this.tokenRepository = tokenRepository;
+        this.tokenService = tokenService;
     }
 
     @Transactional
@@ -172,6 +173,7 @@ public class UserService implements UserDetailsService, IUserService {
         }
         return user.map(MyLoginDetails::new).get();
     }
+
     @Transactional
     public List<Images> getUsersPhotos() {
         List<Integer> listUsersIDs = userRepository.getUsersIDs();
@@ -179,7 +181,7 @@ public class UserService implements UserDetailsService, IUserService {
     }
 
 
-
+    @Transactional
     private List<Images> getAllUsersPhotos(List<Integer> listUsersIDs) {
         Images imageUser = new Images();
         List<Images> listImageUsers = new ArrayList<>();
@@ -205,30 +207,30 @@ public class UserService implements UserDetailsService, IUserService {
 //    public void saveRegisteredUser(User user) {
 //
 //    }
-    @Override
-//    @Transactional
-    public User saveRegisteredUser(UserRequest userRequest) {
-
-        User user = new User(userRequest.getUsername(), userRequest.getPassword(),
-                false, userRequest.getUserFirstName());
-        Teams team = new Teams(userRequest.getName_team());
-        team = teamRepository.save(team);
-        user = userRepository.save(user);
-        UserTeams userTeams = new UserTeams(user.getId(), team.getId_team());
-        UserImages userImages = new UserImages(user.getId(), userRequest.getId_image());
-        Integer id_role = userRepository.getId_role(userRequest.getRole());
-        UserRoles userRole = new UserRoles(user.getId(), id_role);
-        userRolesRepository.save(userRole);
-        userTeamsRepository.save(userTeams);
-        userImagesRepository.save(userImages);
-        return user;
-    }
+//    @Override
+////    @Transactional
+//    public User saveRegisteredUser(UserRequest userRequest) {
+//
+//        User user = new User(userRequest.getUsername(), userRequest.getPassword(),
+//                false, userRequest.getUserFirstName());
+//        Teams team = new Teams(userRequest.getName_team());
+//        team = teamRepository.save(team);
+//        user = userRepository.save(user);
+//        UserTeams userTeams = new UserTeams(user.getId(), team.getId_team());
+//        UserImages userImages = new UserImages(user.getId(), userRequest.getId_image());
+//        Integer id_role = userRepository.getId_role(userRequest.getRole());
+//        UserRoles userRole = new UserRoles(user.getId(), id_role);
+//        userRolesRepository.save(userRole);
+//        userTeamsRepository.save(userTeams);
+//        userImagesRepository.save(userImages);
+//        return user;
+//    }
     @Transactional
     public User addNewUserInTeam(UserRequest userRequest) throws SQLException {
         String result = null;
 //da li ovde treba active true?
         User user = new User(userRequest.getUsername(), userRequest.getPassword(),
-                false, userRequest.getUserFirstName());
+                true, userRequest.getUserFirstName());
 
         user = userRepository.save(user);
         UserTeams userTeams = new UserTeams(user.getId(), userRequest.getId_team());
@@ -282,52 +284,70 @@ public class UserService implements UserDetailsService, IUserService {
 
     }
 
-    @Override
-    public User registerNewUserAccount(UserRequest userRequest) throws Exception {
-//        if (emailExist(userRequest.getUsername())) {
-//            throw new Exception (
-//                    "There is an account with that email adress: "
-//                            + userRequest.getUsername());
-//        }
-        return saveRegisteredUser(userRequest);
-    }
-
-    @Override
-    public User registerNewUserAccountForNewUser(UserRequest userRequest) throws Exception {
-        if (emailExist(userRequest.getUsername())) {
-            throw new Exception (
-                    "There is an account with that email adress: "
-                            + userRequest.getUsername());
-        }
-        return addNewUserInTeam(userRequest);
-    }
-
-    @Override
-    public User getUser(String verificationToken) {
-        User user = tokenRepository.findByToken(verificationToken).getUser();
-        return user;
-    }
-    private boolean emailExist(String email) {
-        return userRepository.findByUserName(email) != null;
-    }
-
-
-
-    @Override
-    public void createVerificationToken(User user, String token) {
-        VerificationToken newUserToken = new VerificationToken(token, user);
-        tokenRepository.save(newUserToken);
-    }
-
-//    @Override
-//    public void createVerificationToken(User user, String token) {
-//        VerificationToken newUserToken = new VerificationToken(token, user);
-//        tokenDAO.save(newUserToken);
+//    private boolean emailExist(String email) {
+//        return userRepository.findByUserName(email) != null;
 //    }
 
+
+//    @Override
+    @Transactional
+    public User registerUser(UserRequest userRequest) {
+//        User user = new User(userRequest.getUsername(), userRequest.getPassword(),
+//                true, userRequest.getUserFirstName());
+        User user = new User();
+        user.setId(userRequest.getId_user());
+        user.setUserName(userRequest.getUsername());
+        user.setPassword(userRequest.getPassword());
+        user.setUserFirstName(userRequest.getUserFirstName());
+        Teams team = new Teams(userRequest.getName_team());
+        team = teamRepository.save(team);
+        user = userRepository.save(user);
+        UserTeams userTeams = new UserTeams(user.getId(), team.getId_team());
+        UserImages userImages = new UserImages(user.getId(), userRequest.getId_image());
+        Integer id_role = userRepository.getId_role(userRequest.getRole());
+        UserRoles userRole = new UserRoles(user.getId(), id_role);
+        userRolesRepository.save(userRole);
+        userTeamsRepository.save(userTeams);
+        userImagesRepository.save(userImages);
+        return user;
+    }
+
     @Override
-    public VerificationToken getVerificationToken(String VerificationToken) {
-        return tokenRepository.findByToken(VerificationToken);
+    @Transactional
+    public User findByUsername(String username) {
+        return userRepository.findByUserName(username).get();
+    }
+
+    @Override
+    @Transactional
+    public User loginUser(UserRequest userRequest) {
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public User findByUsernameAndPassword(String username, String password) {
+        return null;
+    }
+
+    @Override
+    @Transactional
+    public void createVerificationToken(User user, String token) {
+        Token newUserToken = new Token(token, user);
+        tokenService.saveToken(newUserToken);
+    }
+
+
+    @Override
+    @Transactional
+    public Token getVerificationToken(String token) {
+        return tokenService.findByToken(token);
+    }
+
+    @Override
+    @Transactional
+    public void enableRegisteredUser(User user) {
+        userRepository.setActiveUser(user.getId());
     }
 }
 

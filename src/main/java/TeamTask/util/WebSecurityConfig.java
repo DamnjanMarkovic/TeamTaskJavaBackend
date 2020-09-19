@@ -41,17 +41,24 @@ class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity httpSecurity) throws Exception {
 
 		httpSecurity.csrf().disable()
-				.authorizeRequests().antMatchers("/").permitAll()
+				.authorizeRequests()
+				.antMatchers("/").permitAll()
+				.antMatchers("/index").permitAll()
+				.antMatchers("/badToken").permitAll()
 				.antMatchers("/login").permitAll()
+				.antMatchers("/registration").permitAll()
+				.antMatchers("/error").permitAll()
 				.antMatchers("/loginFacebookOrAppleUser").permitAll()
 //				.antMatchers("/rest/users/getLoggedInUser/{id_user}/{jwt}").permitAll()
 				.antMatchers("/rest/teams/ifExists/{id_team}").permitAll()
 				.antMatchers("/rest/users/signUpUser").permitAll()
-				.antMatchers("/rest/users/addNewUserInTeam").permitAll()
 				.antMatchers("/rest/users/confirmRegistration").permitAll()
+				.antMatchers("/rest/users/addNewUserInTeam").permitAll()
+				.antMatchers("/rest/users/confirmRegistration{token}").permitAll()
 				.antMatchers("/rest/users/checkIfUsernameExists/{username}").permitAll()
 				.anyRequest().authenticated().and()
-				.exceptionHandling().and().sessionManagement()
+				.exceptionHandling().accessDeniedPage("/access-denied")
+				.and().sessionManagement()
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 		httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 

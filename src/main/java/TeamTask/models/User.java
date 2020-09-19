@@ -27,10 +27,10 @@ public class User {
 //    @Column(name = "enabled")
 //    private boolean enabled;
 
-    public User() {
-        super();
-//        this.enabled=false;
-    }
+//    public User() {
+////        super();
+////        this.enabled=false;
+//    }
 //    private Integer id_image;
 
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -58,7 +58,10 @@ public class User {
 //        this.id_image = id_image;
 //    }
 
-
+    public User() {
+        super();
+        this.active=false;
+    }
     public User(UUID id) {
         this.id = id;
     }

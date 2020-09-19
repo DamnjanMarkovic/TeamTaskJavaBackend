@@ -9,20 +9,26 @@ import java.util.Calendar;
 import java.util.UUID;
 
 @Entity
-@Table(name = "verification_token")
-public class VerificationToken {
+@Table(name = "token")
+public class Token {
     private static final int EXPIRATION = 60 * 24;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    @Column(name = "id")
+    private Integer id;
 
     @Column(name="token")
     private String token;
 
-    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", nullable = false)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinTable(name = "user_token", joinColumns = @JoinColumn(name = "id_token"), inverseJoinColumns = @JoinColumn(name = "id_user"))
     private User user;
+
+
+//    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+//    @JoinColumn(name = "user_id", nullable = false)
+//    private User user;
 
     @Column(name="created_date")
     private Date createdDate;
@@ -30,17 +36,19 @@ public class VerificationToken {
     @Column(name="expiry_date")
     private Date expiryDate;
 
-    public VerificationToken() {
+    public Token() {
         super();
     }
 
-    public VerificationToken(final String token) {
+
+
+    public Token(final String token) {
         super();
         this.token = token;
         this.expiryDate = calculateExpiryDate(EXPIRATION);
     }
 
-    public VerificationToken(final String token, final User user) {
+    public Token(final String token, final User user) {
         super();
         Calendar calendar = Calendar.getInstance();
 
@@ -50,11 +58,15 @@ public class VerificationToken {
         this.expiryDate = calculateExpiryDate(EXPIRATION);
     }
 
-    public int getId() {
+    public static int getEXPIRATION() {
+        return EXPIRATION;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

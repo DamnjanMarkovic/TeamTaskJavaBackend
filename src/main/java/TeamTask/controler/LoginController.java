@@ -36,11 +36,11 @@ public class LoginController {
         this.userService = userService;
     }
 
-    @RequestMapping("/")
+    @GetMapping("/")
     public String index() {
         return "index";
     }
-    @RequestMapping("/index")
+    @GetMapping("/index")
     public String indexPage() {
         return "index";
     }

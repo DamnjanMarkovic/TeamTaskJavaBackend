@@ -4,6 +4,20 @@ public class BackupDocs {
 
 
     /*
+    CREATE TABLE token (
+            id SERIAL PRIMARY KEY,
+            token TEXT NOT NULL,
+            created_date TEXT NOT NULL,
+            expiry_date TEXT NOT NULL
+
+    );
+
+        CREATE TABLE user_token (
+            id SERIAL PRIMARY KEY,
+            id_user UUID,
+            id_token INT
+    );
+
 
     CREATE TABLE verification_token (
             id UUID,

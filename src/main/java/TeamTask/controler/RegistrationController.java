@@ -1,8 +1,9 @@
 package TeamTask.controler;
 
-import TeamTask.component.IUserService;
+import TeamTask.emailConfirmation.IUserService;
 import TeamTask.models.User;
-import TeamTask.models.VerificationToken;
+import TeamTask.models.Token;
+import TeamTask.service.TokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.ui.Model;
@@ -21,17 +22,20 @@ public class RegistrationController {
     @Autowired
     private MessageSource messages;
 
-    @GetMapping("/regitrationConfirm")
+    @Autowired
+    private TokenService tokenService;
+
+    @GetMapping("/registrationConfirm")
     public String confirmRegistration
             (WebRequest request, Model model, @RequestParam("token") String token) {
 
         Locale locale = request.getLocale();
 
-        VerificationToken verificationToken = service.getVerificationToken(token);
+        Token verificationToken = service.getVerificationToken(token);
         if (verificationToken == null) {
             String message = messages.getMessage("auth.message.invalidToken", null, locale);
             model.addAttribute("message", message);
-            return "redirect:/badUser.html?lang=" + locale.getLanguage();
+            return "redirect:/badToken";
         }
 
         User user = verificationToken.getUser();
@@ -39,11 +43,13 @@ public class RegistrationController {
         if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {
             String messageValue = messages.getMessage("auth.message.expired", null, locale);
             model.addAttribute("message", messageValue);
-            return "redirect:/badUser.html?lang=" + locale.getLanguage();
+            return "redirect:/badToken";
         }
 
         user.setActive(true);
 
-        return "redirect:/login.html?lang=" + request.getLocale().getLanguage();
+        tokenService.removeToken(token);
+
+        return "redirect:/index";
     }
 }

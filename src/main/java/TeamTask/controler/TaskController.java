@@ -35,9 +35,9 @@ public class TaskController {
         return taskService.getAll();
     }
 
-    @GetMapping(value = "changeCompleteness/{idTeam}")
-    public void changeCompleteness(@PathVariable String idTeam) throws EntityNotFoundException {
-        taskService.changeCompleteness(idTeam);
+    @GetMapping(value = "changeCompleteness/{idTask}")
+    public void changeCompleteness(@PathVariable String idTask) throws EntityNotFoundException {
+        taskService.changeCompleteness(idTask);
     }
 
 

@@ -33,6 +33,10 @@ public class User {
 //    }
 //    private Integer id_image;
 
+//    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+//    @JoinTable(name = "user_token", joinColumns = @JoinColumn(name = "id_user"), inverseJoinColumns = @JoinColumn(name = "id_token"))
+//    private Token token;
+
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "user_teams", joinColumns = @JoinColumn(name = "id_user"), inverseJoinColumns = @JoinColumn(name = "id_team"))
     private Teams teams;

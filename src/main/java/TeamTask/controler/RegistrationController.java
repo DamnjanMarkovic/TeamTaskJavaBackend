@@ -25,6 +25,7 @@ public class RegistrationController {
     @Autowired
     private TokenService tokenService;
 
+
     @GetMapping("/registrationConfirm")
     public String confirmRegistration
             (WebRequest request, Model model, @RequestParam("token") String token) {
@@ -37,7 +38,7 @@ public class RegistrationController {
             model.addAttribute("message", message);
             return "redirect:/badToken";
         }
-
+//        User user = tokenService.getUserOnToken(verificationToken);
         User user = verificationToken.getUser();
         Calendar cal = Calendar.getInstance();
         if ((verificationToken.getExpiryDate().getTime() - cal.getTime().getTime()) <= 0) {

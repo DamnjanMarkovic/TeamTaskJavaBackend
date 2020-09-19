@@ -16,8 +16,9 @@ public class UserTeams {
     private UUID id_team;
 
     public UserTeams() {
-
     }
+
+
 
     public UserTeams(Integer id_user_teams, UUID id_user, UUID id_team) {
         this.id_user_teams = id_user_teams;

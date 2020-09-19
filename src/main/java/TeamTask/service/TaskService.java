@@ -99,16 +99,16 @@ public class TaskService {
         return convertTaskToTasksResponse(alltasks);
     }
     @Transactional
-    public void changeCompleteness(String idTeam) {
+    public void changeCompleteness(String idTask) {
         Boolean value = false;
-        UUID idTeamID = UUID.fromString(idTeam);
-        Task task = taskRepository.getTaskOnID(idTeamID);
+        UUID idTaskID = UUID.fromString(idTask);
+        Task task = taskRepository.getTaskOnID(idTaskID);
         if (task.isTaskcompleted()) {
             value = false;
         } else {
             value = true;
         }
-        taskRepository.changeCompleteness(idTeamID, value);
+        taskRepository.changeCompleteness(idTaskID, value);
 
     }
 

@@ -204,15 +204,13 @@ public class UserController {
 		return null;
 	}
 
-	//ovde treba proveriti  da li je pass "faceOrAppleUser" - ako jeste, to je dodavanje korisnika fejsbuk ili apple
-	@PostMapping(value = "/signUpUser", consumes = {"multipart/form-data"})
-	public String saveUser (@RequestParam("imageFile") @PathVariable MultipartFile imageFile,
-							UserRequest userRequest, BindingResult result, WebRequest request, Model model){
+	@PostMapping(value = "/addNewUserInTeam", consumes = {"multipart/form-data"})
+	public String addNewUserInTeam (@RequestParam("imageFile") @PathVariable MultipartFile imageFile,
+									UserRequest userRequest, BindingResult result, WebRequest request, Model model){
 		User registeredUser = new User();
 		if (result.hasErrors()) {
 			return "registration";
 		}
-		System.out.println("novi user ide u registraciju");
 		Images image = new Images();
 		image.setImagename(imageFile.getOriginalFilename());
 		if(userService.checkIfUsernameExists(userRequest.getUsername())!=null) {
@@ -222,16 +220,44 @@ public class UserController {
 			System.out.println("cool");
 		}
 		try {
-
 			Integer id_image = imagesService.saveSpecificImage(imageFile, image);
 			userRequest.setId_image(id_image);
-			registeredUser = userService.registerUser(userRequest);
-			System.out.println("nesto");
+			registeredUser = userService.addNewUserInTeam(userRequest);
 			String appUrl = request.getContextPath();
 			OnRegistrationSuccessEvent event = new OnRegistrationSuccessEvent(registeredUser, request.getLocale(), appUrl);
 			eventPublisher.publishEvent(event);
 			sendConfirmationMail(event);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return "registrationSuccess";
+	}
 
+	@PostMapping(value = "/signUpUser", consumes = {"multipart/form-data"})
+	public String saveUser (@RequestParam("imageFile") @PathVariable MultipartFile imageFile,
+							UserRequest userRequest, BindingResult result, WebRequest request, Model model){
+		User registeredUser = new User();
+		if (result.hasErrors()) {
+			return "registration";
+		}
+		Images image = new Images();
+		image.setImagename(imageFile.getOriginalFilename());
+		if(userService.checkIfUsernameExists(userRequest.getUsername())!=null) {
+			model.addAttribute("error","There is already an account with this username: " + userRequest.getUsername());
+			logger.info("There is already an account with this username: " + userRequest.getUsername());
+//			return "registration";
+			System.out.println("cool");
+		}
+		try {
+			Integer id_image = imagesService.saveSpecificImage(imageFile, image);
+			userRequest.setId_image(id_image);
+			registeredUser = userService.registerUser(userRequest);
+			String appUrl = request.getContextPath();
+			OnRegistrationSuccessEvent event = new OnRegistrationSuccessEvent(registeredUser, request.getLocale(), appUrl);
+			eventPublisher.publishEvent(event);
+			sendConfirmationMail(event);
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -259,35 +285,6 @@ public class UserController {
 		mailSender.send(email);
 
 	}
-
-
-
-	//ovde treba proveriti  da li je pass "faceOrAppleUser" - ako jeste, to je dodavanje korisnika fejsbuk ili apple
-	@PostMapping(value = "/addNewUserInTeam", consumes = {"multipart/form-data"})
-	public String addNewUserInTeam (@RequestParam("imageFile") @PathVariable MultipartFile imageFile,
-									HttpServletRequest request, UserRequest userRequest){
-		User registeredUser = new User();
-		Images image = new Images();
-		image.setImagename(imageFile.getOriginalFilename());
-
-		try {
-			Integer id_image = imagesService.saveSpecificImage(imageFile, image);
-			userRequest.setId_image(id_image);
-			registeredUser = userService.registerUser(userRequest);
-			String appUrl = request.getContextPath();
-			OnRegistrationSuccessEvent event = new OnRegistrationSuccessEvent(registeredUser, request.getLocale(), appUrl);
-			eventPublisher.publishEvent(event);
-			sendConfirmationMail(event);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		return "registrationSuccess";
-	}
-
-
-
 
 
 }

@@ -29,12 +29,17 @@ public class TokenService {
         tokenRepository.save(token);
     }
 
+
+    @Transactional
+    public void getUserOnToken(Token token) {
+        tokenRepository.save(token);
+    }
+
+
     @Transactional
     public void removeToken(String token) {
-//ovde treba resiti token
-//        Token tokenRemoval = new Token(token);
-//        Token tokenRemoval = tokenRepository.findByToken(token);
-//        tokenRepository.delete(tokenRemoval);
+        tokenRepository.removeTokenOnToken(token);
+
     }
 
 

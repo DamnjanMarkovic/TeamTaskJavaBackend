@@ -292,13 +292,13 @@ public class UserService implements UserDetailsService, IUserService {
 //    @Override
     @Transactional
     public User registerUser(UserRequest userRequest) {
-//        User user = new User(userRequest.getUsername(), userRequest.getPassword(),
-//                true, userRequest.getUserFirstName());
-        User user = new User();
-        user.setId(userRequest.getId_user());
-        user.setUserName(userRequest.getUsername());
-        user.setPassword(userRequest.getPassword());
-        user.setUserFirstName(userRequest.getUserFirstName());
+        User user = new User(userRequest.getUsername(), userRequest.getPassword(),
+                true, userRequest.getUserFirstName());
+//        User user = new User();
+//        user.setId(userRequest.getId_user());
+//        user.setUserName(userRequest.getUsername());
+//        user.setPassword(userRequest.getPassword());
+//        user.setUserFirstName(userRequest.getUserFirstName());
         Teams team = new Teams(userRequest.getName_team());
         team = teamRepository.save(team);
         user = userRepository.save(user);

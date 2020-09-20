@@ -203,7 +203,7 @@ public class UserController {
 		tokenService.removeToken(token);
 		return null;
 	}
-
+		//check if pass is "faceOrAppleUser"
 	@PostMapping(value = "/addNewUserInTeam", consumes = {"multipart/form-data"})
 	public String addNewUserInTeam (@RequestParam("imageFile") @PathVariable MultipartFile imageFile,
 									UserRequest userRequest, BindingResult result, WebRequest request, Model model){
@@ -222,11 +222,17 @@ public class UserController {
 		try {
 			Integer id_image = imagesService.saveSpecificImage(imageFile, image);
 			userRequest.setId_image(id_image);
-			registeredUser = userService.addNewUserInTeam(userRequest);
-			String appUrl = request.getContextPath();
-			OnRegistrationSuccessEvent event = new OnRegistrationSuccessEvent(registeredUser, request.getLocale(), appUrl);
-			eventPublisher.publishEvent(event);
-			sendConfirmationMail(event);
+
+			if (userRequest.getPassword().equalsIgnoreCase("faceOrAppleUser")) {
+				userService.addNewFaceorAppleUserInTeam(userRequest);
+			} else {
+				registeredUser = userService.addNewUserInTeam(userRequest);
+				String appUrl = request.getContextPath();
+				OnRegistrationSuccessEvent event = new OnRegistrationSuccessEvent(registeredUser, request.getLocale(), appUrl);
+				eventPublisher.publishEvent(event);
+				sendConfirmationMail(event);
+			}
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -234,7 +240,7 @@ public class UserController {
 		}
 		return "registrationSuccess";
 	}
-
+	//check if pass is "faceOrAppleUser"
 	@PostMapping(value = "/signUpUser", consumes = {"multipart/form-data"})
 	public String saveUser (@RequestParam("imageFile") @PathVariable MultipartFile imageFile,
 							UserRequest userRequest, BindingResult result, WebRequest request, Model model){
@@ -253,11 +259,17 @@ public class UserController {
 		try {
 			Integer id_image = imagesService.saveSpecificImage(imageFile, image);
 			userRequest.setId_image(id_image);
-			registeredUser = userService.registerUser(userRequest);
-			String appUrl = request.getContextPath();
-			OnRegistrationSuccessEvent event = new OnRegistrationSuccessEvent(registeredUser, request.getLocale(), appUrl);
-			eventPublisher.publishEvent(event);
-			sendConfirmationMail(event);
+
+			if (userRequest.getPassword().equalsIgnoreCase("faceOrAppleUser")) {
+				userService.registerFaceorAppleUserUser(userRequest);
+			} else {
+				registeredUser = userService.registerUser(userRequest);
+				String appUrl = request.getContextPath();
+				OnRegistrationSuccessEvent event = new OnRegistrationSuccessEvent(registeredUser, request.getLocale(), appUrl);
+				eventPublisher.publishEvent(event);
+				sendConfirmationMail(event);
+			}
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (Exception e) {

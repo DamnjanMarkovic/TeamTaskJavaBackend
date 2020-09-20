@@ -225,6 +225,28 @@ public class UserService implements UserDetailsService, IUserService {
 //        userImagesRepository.save(userImages);
 //        return user;
 //    }
+
+    @Transactional
+    public User addNewFaceorAppleUserInTeam(UserRequest userRequest) throws SQLException {
+        String result = null;
+//da li ovde treba active true?
+        User user = new User(userRequest.getUsername(), userRequest.getPassword(),
+                true, userRequest.getUserFirstName());
+
+        user = userRepository.save(user);
+        UserTeams userTeams = new UserTeams(user.getId(), userRequest.getId_team());
+        UserImages userImages = new UserImages(user.getId(), userRequest.getId_image());
+        Integer id_role = userRepository.getId_role(userRequest.getRole());
+        UserRoles userRole = new UserRoles(user.getId(), id_role);
+        userRolesRepository.save(userRole);
+        userTeamsRepository.save(userTeams);
+        userImagesRepository.save(userImages);
+        result = "User inserted in the DB";
+        return user;
+    }
+
+
+
     @Transactional
     public User addNewUserInTeam(UserRequest userRequest) throws SQLException {
         String result = null;
@@ -290,6 +312,23 @@ public class UserService implements UserDetailsService, IUserService {
 
 
 //    @Override
+    @Transactional
+    public User registerFaceorAppleUserUser(UserRequest userRequest) {
+        User user = new User(userRequest.getUsername(), userRequest.getPassword(),
+                true, userRequest.getUserFirstName());
+        Teams team = new Teams(userRequest.getName_team());
+        team = teamRepository.save(team);
+        user = userRepository.save(user);
+        UserTeams userTeams = new UserTeams(user.getId(), team.getId_team());
+        UserImages userImages = new UserImages(user.getId(), userRequest.getId_image());
+        Integer id_role = userRepository.getId_role(userRequest.getRole());
+        UserRoles userRole = new UserRoles(user.getId(), id_role);
+        userRolesRepository.save(userRole);
+        userTeamsRepository.save(userTeams);
+        userImagesRepository.save(userImages);
+        return user;
+    }
+
     @Transactional
     public User registerUser(UserRequest userRequest) {
         User user = new User(userRequest.getUsername(), userRequest.getPassword(),

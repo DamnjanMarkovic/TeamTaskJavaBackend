@@ -281,7 +281,8 @@ public class UserController {
 		SimpleMailMessage email = new SimpleMailMessage();
 		email.setTo(recipient);
 		email.setSubject(subject);
-		email.setText(message + "\nhttp://192.168.0.15:8080/rest/users" + url);
+//		email.setText(message + "\nhttp://192.168.0.15:8080/rest/users" + url);
+		email.setText(message + "\nhttps://teamtaskcalendar.herokuapp.com/rest/users" + url);
 		mailSender.send(email);
 
 	}

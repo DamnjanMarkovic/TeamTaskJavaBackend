@@ -230,7 +230,7 @@ public class UserService implements UserDetailsService, IUserService {
         String result = null;
 //da li ovde treba active true?
         User user = new User(userRequest.getUsername(), userRequest.getPassword(),
-                true, userRequest.getUserFirstName());
+                false, userRequest.getUserFirstName());
 
         user = userRepository.save(user);
         UserTeams userTeams = new UserTeams(user.getId(), userRequest.getId_team());
@@ -293,12 +293,7 @@ public class UserService implements UserDetailsService, IUserService {
     @Transactional
     public User registerUser(UserRequest userRequest) {
         User user = new User(userRequest.getUsername(), userRequest.getPassword(),
-                true, userRequest.getUserFirstName());
-//        User user = new User();
-//        user.setId(userRequest.getId_user());
-//        user.setUserName(userRequest.getUsername());
-//        user.setPassword(userRequest.getPassword());
-//        user.setUserFirstName(userRequest.getUserFirstName());
+                false, userRequest.getUserFirstName());
         Teams team = new Teams(userRequest.getName_team());
         team = teamRepository.save(team);
         user = userRepository.save(user);

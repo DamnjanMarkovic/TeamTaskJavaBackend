@@ -7,6 +7,7 @@ import TeamTask.models.dto.LoginResponse;
 import TeamTask.models.dto.UsersInTeamResponse;
 import TeamTask.service.TaskService;
 import TeamTask.service.TokenService;
+//import com.notnoop.apns.ApnsService;
 import org.apache.commons.compress.utils.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -26,16 +27,21 @@ import TeamTask.models.dto.UserResponse;
 import TeamTask.service.ImagesService;
 import TeamTask.service.UserService;
 
-
+//import javax.management.Notification;
+import javax.management.Notification;
 import javax.persistence.EntityNotFoundException;
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
+
+
+
+
 
 @RestController
 @RequestMapping(value = "/rest/users")
@@ -57,7 +63,9 @@ public class UserController {
 	@Autowired
 	private TokenService tokenService;
 
-
+//	private static final String template = "Hello, %s!";
+//	private final AtomicLong counter = new AtomicLong();
+//	ApnsService service = null;
 
 
 	private Logger logger = Logger.getLogger(getClass().getName());
@@ -67,10 +75,47 @@ public class UserController {
 		this.taskService = taskService;
 	}
 
+//	final String topic = "com.example.myApp";
+
+
+//	@RequestMapping("/notification")
+//	public Notification notification(@RequestParam(value="name", defaultValue="World") String name) throws IOException {
+//
+//		System.out.println("Sending an iOS push notification…");
+//
+//		ApnsService service = APNS.newService()
+//				.withCert("XXX.p12", "YOUR_PASSWORD")
+//				.withSandboxDestination()
+//				.build();
+//		String payload = APNS.newPayload()
+//				.alertBody("Can’t be simpler than this!")
+//				.alertTitle("test alert title").build();
+//
+//
+//		String token = "BE7A0780FD5F20BF2D599E7974CA400FF943EFE28FB24E66EDBC3C95BD9D8ABE";
+//
+//		System.out.println("payload: " + payload);
+//
+//		service.push(token, payload);
+//
+//		System.out.println("The message has been hopefully sent…");
+//
+//
+//		return new Notification(counter.incrementAndGet(),
+//				String.format(template, name));
+//	}
+
+
+
+
 	@GetMapping(value = "/all")
 	public List<UserResponse> getAll() {
 		return userService.getAll();
 	}
+
+
+
+
 	@GetMapping("/error")
 	public String indexPage() {
 		return messages.getMessage("message.message.expired", null, null);
